@@ -35,6 +35,40 @@ It CANNOT create a native Intervals “plan object”.
 
 ---
 
+# STRENGTH TRAINING EXCEPTION
+
+The Strength Training knowledge resource is:
+
+- GPT knowledge file: `strength_skill.md`
+- MCP resource: `knowledge://training/strength`
+
+When this contract says **Strength Training knowledge resource**, use whichever representation is available in the current client.
+
+`WeightTraining` is not governed by the endurance interval-step syntax in Sections 1–18.
+
+When creating or editing a strength-training workout:
+
+1. Consult the Strength Training knowledge resource first.
+2. Use the strength prescription produced under that contract.
+3. Set:
+   - `category = WORKOUT`
+   - `type = WeightTraining`
+4. Store exercises, sets, reps, loads, RPE/RIR, and coaching notes as structured Markdown in the workout description.
+5. Do NOT require:
+   - duration per exercise;
+   - FTP / power targets;
+   - pace targets;
+   - HR targets;
+   - Intervals.icu endurance interval syntax.
+6. Do NOT invent exercise loads.
+7. Do NOT independently progress load, reps, or sets.
+8. Athlete-supplied strength loads and units must be preserved unless progression is supported by the Strength Training knowledge resource.
+9. This Workout Builder contract owns calendar execution only; the Strength Training knowledge resource owns strength prescription and progression methodology.
+
+This exception overrides endurance-specific workout-step requirements for `type = WeightTraining`.
+
+---
+
 # 1. WORKOUT BUILDER OUTPUT (STRICT)
 
 ## PRIMARY RULE
@@ -578,6 +612,15 @@ deadlift
 ```
 
 → `WORKOUT / WeightTraining`
+
+For `WeightTraining`:
+
+- consult the Strength Training knowledge resource before generating or progressing the prescription;
+- use structured Markdown exercise notes rather than endurance interval syntax;
+- preserve athlete-supplied loads, sets, reps, units, RPE, and RIR;
+- do not infer progression from calendar recurrence alone;
+- do not infer exercise progression from CTL, ATL, TSB, ACWR, ADE, ESPE, or endurance performance;
+- this Workout Builder contract only handles the resulting calendar event.
 
 ```text
 core
@@ -3482,3 +3525,4 @@ Duration: 90m
 ```text
 - Long run 90m 74% Pace
 ```
+

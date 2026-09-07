@@ -237,9 +237,35 @@ Do not prescribe a workout that conflicts with the supplied ADE directive or pha
 
 ---
 
+## Strength Training
+
+For strength-training prescription, progression, maintenance, exercise selection, sets, reps, loads, RPE/RIR, or strength/endurance integration, read:
+
+`knowledge://training/strength`
+
+The Strength Training resource is authoritative for strength methodology, athlete-supplied strength baselines, advisory progression, sets/reps/load decisions, RPE/RIR handling, phase-aware strength behaviour, strength/endurance interference, and progression safety boundaries.
+
+For writing the resulting strength session to the Intervals.icu calendar, also use:
+
+`knowledge://training/workout-builder`
+
+For `WeightTraining`:
+
+- use `knowledge://training/strength` to determine the prescription;
+- use `knowledge://training/workout-builder` for calendar execution;
+- do not invent athlete working weights;
+- do not independently progress load, reps, or sets from general knowledge;
+- do not derive exercise-level progression from CTL, ATL, TSB, ACWR, ADE, ESPE, or endurance performance;
+- do not apply endurance interval-step syntax to individual strength exercises;
+- do not claim deterministic strength progression unless an authoritative Montis Strength Progression Engine supplies it.
+
+---
+
 ## Workout Writing
 
-When producing an Intervals.icu workout:
+The rules below apply to structured endurance workouts. `WeightTraining` is governed by `knowledge://training/strength` for prescription and by `knowledge://training/workout-builder` for calendar execution.
+
+When producing an Intervals.icu endurance workout:
 
 - lock and preserve the requested sport
 - use valid Montis/Intervals.icu workout syntax
