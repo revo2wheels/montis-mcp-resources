@@ -84,6 +84,27 @@ The Montis MCP service uses these public knowledge resources:
 
 These files are runtime knowledge resources. Their filenames and resource mappings should therefore be treated as stable interface contracts unless the corresponding private Edge configuration is updated at the same time.
 
+## OpenAI plugin skill
+
+The repository also contains an OpenAI-compatible skill bundle at:
+
+```text
+skills/montis-coaching/
+├── SKILL.md
+└── references/
+```
+
+`SKILL.md` supplies the coaching workflow, MCP tool routing, output rules, and safety boundaries that previously lived in the custom GPT instructions. Its `references/` directory packages the MCP-native knowledge files needed by the workflow, plus the detailed terrain-execution reference used by the existing GPT.
+
+The existing root resource files and `knowledge://` URI mappings remain unchanged for Claude, Gemini, and other MCP clients. When a root resource changes, update the corresponding packaged reference before publishing a new plugin version.
+
+There are two supported ways to add this skill to the OpenAI plugin draft:
+
+1. Upload the `montis-coaching` skill bundle in the submission portal's **Skills** tab.
+2. Add the draft MCP Skills extension to the hosted server (`capabilities.extensions["io.modelcontextprotocol/skills"]`, `skills/list`, and `skills/get`) and expose every bundled file through `resources/read` using `skill://` URIs and SHA-256 digests. After deployment, **Scan Tools** imports a snapshot into the draft.
+
+Standard `resources/list` and `resources/read` entries using `knowledge://` URIs remain valid MCP resources, but they do not by themselves register an OpenAI plugin skill.
+
 ## MCP tools
 
 The hosted MCP service exposes Montis capabilities through tools rather than implementing coaching logic in the language model.
