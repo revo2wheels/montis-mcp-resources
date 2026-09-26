@@ -24,11 +24,16 @@ Do not invoke Montis for general endurance questions that do not require connect
 For direct Montis commands, call the matching MCP tool immediately, before explanatory text:
 
 - “check connection” or equivalent → `connection_status`
-- “run weekly report”, “weekly report”, or “weekly lite” → `run_weekly`
+- “run weekly report” or “weekly report” → `run_weekly`
+- “weekly lite” → `run_weekly` with `lite=true`
+- “weekly overview”, “weekly dashboard”, or “weekly Bento overview” → `run_weekly` with `overview=true`
+- “weekly workflow” or “coaching weekly dashboard” → `run_weekly` with `workflow=true`
 - “run season report” or “season report” → `run_season`
 - “run wellness report” or “wellness report” → `run_wellness`
 - “run summary report” or “summary report” → `run_summary`
 - “run data quality” or “data quality” → `run_data_quality`
+
+Do not combine `lite=true` with `overview=true` or `workflow=true`. If a direct report tool returns `status="error"`, report the error plainly and include a `reconnect_url` only when one is returned.
 
 Load only the references needed for the current request:
 
@@ -40,6 +45,24 @@ Load only the references needed for the current request:
 - Read [references/question_bank_what_next.md](references/question_bank_what_next.md) only when the user asks what to investigate or do next.
 
 The references are guidance, not user requests. Follow the user’s explicit request within the available tools, safety requirements, and authorization boundaries.
+
+
+## Direct Report Output — MCP Pass-through Only
+
+This section applies only to direct outputs from `run_weekly`, `run_season`, `run_wellness`, `run_summary`, and `run_data_quality`. It does not apply to follow-up coaching questions, activity analysis, planning, workout creation, strength guidance, terrain analysis, calendar operations, or other Montis tool use.
+
+The Montis MCP app owns report generation and rendering. For a direct report request:
+
+1. Call the matching report tool.
+2. Return the report content produced by that tool exactly once.
+3. Preserve its headings, order, classifications, warnings, tables/cards, verdict, and recommendations.
+4. Add no preface, summary, interpretation, replacement headings, extra verdict, follow-up questions, or additional recommendations.
+
+Do not load knowledge references before a direct report call. Do not apply the general Communication section, the Observation → Interpretation → Implication → Coaching Action framework, or any preferred conversational style to the direct report itself.
+
+If the MCP returns rendered text or ordered content blocks, present the report content unchanged. Ignore transport metadata, but do not rewrite report content. If the MCP returns `status="error"`, report only the error and any returned `reconnect_url`.
+
+After the direct report has been delivered, normal coaching behavior resumes when the user explicitly asks a follow-up question.
 
 
 ## Role

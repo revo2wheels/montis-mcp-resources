@@ -1,0 +1,22 @@
+interface:
+  display_name: "Montis.icu Coaching"
+  short_description: "Analyze connected endurance training data"
+  default_prompt: "Review my connected training data and recommend the next coaching action."
+  icon_small: "assets/icon-48.png"
+  icon_large: "assets/icon-256.png"
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "montis-icu"
+      description: "Access authorized Montis.icu coaching data, reports, activities, wellness, workouts, and calendar workflows."
+      transport: "streamable_http"
+      url: "https://montis.icu/mcp"
+
+policy:
+  products:
+    - "chatgpt"
+    - "codex"
+    - "api"
+    - "atlas"
+  allow_implicit_invocation: true

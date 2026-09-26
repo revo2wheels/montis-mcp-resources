@@ -1,0 +1,9 @@
+# OpenAI plugin skill manifest for the Montis Plan Builder.
+# Mirrors the montis-coaching bundle. Add icons under assets/ (icon-48.png,
+# icon-256.png) before packaging the ChatGPT skill zip.
+name: montis-plan-builder
+description: >-
+  Build a multi-week, block-periodised Montis training plan from authorized
+  Intervals.icu data with governed weekly load targets and valid Intervals.icu
+  workouts, then write it to the athlete's calendar on confirmation.
+entrypoint: SKILL.md
