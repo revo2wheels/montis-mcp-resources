@@ -24,6 +24,7 @@ CALENDAR
 - "planned events", "calendar", "schedule" → get_calendar
 - "write workout", "add workout", "plan workout" → calendar_write
 - "delete workout", "remove event" → calendar_delete
+- "read event", "event by id", "planned event" → get_event
 
 ACTIVITY
 - "activity", "analyse activity", "{id}", "{date}" → get_activity
@@ -112,6 +113,8 @@ ATHLETE / DATA
 - "athlete profile" → get_profile
 - "sport settings" → get_sport_settings
 - "coached athletes" → get_coached_athletes
+- "coach cockpit", "cockpit", "athlete roster overview" → coach_cockpit
+- "pending training updates", "check updates" → check_pending_training_updates
 - "check connection", "connection status" → connection_status
 
 FORBIDDEN:
@@ -279,6 +282,12 @@ Sport Settings → get_sport_settings → params: athleteID? → athlete sport s
 Training Plan → get_training_plan → params: athleteID? → structured training plan (if configured in Intervals.icu)
 
 Coached Athletes → get_coached_athletes → params: none → list coached athletes if available
+
+Coach Cockpit → coach_cockpit → params: mode?, limit?, athleteID? → multi-athlete coaching overview across your roster
+
+Pending Training Updates → check_pending_training_updates → params: athleteID? → check the athlete's pending daily update queue
+
+Event → get_event → params: event_id*, athleteID? → read a single planned calendar event by id
 
 Check Connection → connection_status → params: none → check Montis to Intervals connection
 
