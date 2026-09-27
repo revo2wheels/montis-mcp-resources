@@ -270,6 +270,8 @@ Use:
 - **Summary** — macrocycle or long-range review
 - **Data Quality** — validate data before strong conclusions when coverage or source integrity is uncertain
 
+**Pending training updates** — when `check_pending_training_updates` returns new ACTIVITY_UPLOADED events, analyse the new activity, then run the Weekly report. For WELLNESS_UPDATED events, give a wellness and recovery assessment. If both are present, use both in the response.
+
 Respect report recency. Historical weekly reports describe the state at that time and must not be presented as current tactical guidance.
 
 Do not alter report classifications or silently replace deterministic outputs with your own labels.
