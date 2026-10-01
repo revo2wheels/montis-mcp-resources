@@ -98,12 +98,17 @@ skills/montis-coaching/
 
 The existing root resource files and `knowledge://` URI mappings remain unchanged for Claude, Gemini, and other MCP clients. When a root resource changes, update the corresponding packaged reference before publishing a new plugin version.
 
-There are two supported ways to add this skill to the OpenAI plugin draft:
+The current OpenAI public-plugin workflow uses one complete portable ZIP rather than separate form uploads for metadata and skills. The maintained package source is:
 
-1. Upload the `montis-coaching` skill bundle in the submission portal's **Skills** tab.
-2. Add the draft MCP Skills extension to the hosted server (`capabilities.extensions["io.modelcontextprotocol/skills"]`, `skills/list`, and `skills/get`) and expose every bundled file through `resources/read` using `skill://` URIs and SHA-256 digests. After deployment, **Scan Tools** imports a snapshot into the draft.
+`openai-plugin/montis-icu-coach/`
 
-Standard `resources/list` and `resources/read` entries using `knowledge://` URIs remain valid MCP resources, but they do not by themselves register an OpenAI plugin skill.
+It contains the portable `plugin.json`, production `mcp.json`, listing icons, the `montis-coaching` skill, and the `montis-plan-builder` skill. The upload-ready archive is stored alongside that source:
+
+`openai-plugin/montis-icu-coach-openai-plugin-2.0.2.zip`
+
+Upload that archive as a new version of the existing **Montis.icu Coach** plugin. Do not upload a portal-generated `.app.json` binding or create a duplicate plugin for the same MCP URL.
+
+The hosted MCP may also expose the MCP Skills extension (`capabilities.extensions["io.modelcontextprotocol/skills"]`, `skills/list`, and `skills/get`) and skill files through `resources/read`. Standard `resources/list` and `resources/read` entries using `knowledge://` URIs remain valid MCP resources, but they do not replace the skills bundled in the public plugin ZIP.
 
 ## MCP tools
 
