@@ -50,13 +50,23 @@ https://montis.icu/mcp
 
 Transport: **Streamable HTTP**
 
-Public client identifier:
+### Authentication
+
+OAuth (authorization code with PKCE `S256`) is handled by the hosted Montis Edge service. Discovery metadata is published at the standard well-known paths (`/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`, also under `/mcp/`).
+
+Supported AI clients identify themselves with a **Client ID Metadata Document (CIMD)**, so no client ID has to be entered when adding the connector. The server advertises `client_id_metadata_document_supported: true` and accepts these metadata documents, each only with its own redirect:
+
+| Client | Client ID (metadata document URL) | Redirect |
+|---|---|---|
+| ChatGPT | `https://chatgpt.com/oauth/client.json` | `https://chatgpt.com/connector_platform_oauth_redirect` |
+| Claude (web, desktop, mobile) | `https://claude.ai/oauth/mcp-oauth-client-metadata` | `https://claude.ai/api/mcp/auth_callback` |
+| Claude Code | `https://claude.ai/oauth/claude-code-client-metadata` | `http://localhost:<port>/callback` (any local port) |
+
+Other MCP clients, and connections set up before CIMD, keep using the predefined public client (no client secret):
 
 ```text
 intervals-mcp
 ```
-
-OAuth discovery and authorization are handled by the hosted Montis Edge service.
 
 The MCP service currently exposes the standard protocol operations used by supported clients, including:
 
@@ -84,32 +94,6 @@ The Montis MCP service uses these public knowledge resources:
 
 These files are runtime knowledge resources. Their filenames and resource mappings should therefore be treated as stable interface contracts unless the corresponding private Edge configuration is updated at the same time.
 
-## OpenAI plugin skill
-
-The repository also contains an OpenAI-compatible skill bundle at:
-
-```text
-skills/montis-coaching/
-├── SKILL.md
-└── references/
-```
-
-`SKILL.md` supplies the coaching workflow, MCP tool routing, output rules, and safety boundaries that previously lived in the custom GPT instructions. Its `references/` directory packages the MCP-native knowledge files needed by the workflow, plus the detailed terrain-execution reference used by the existing GPT.
-
-The existing root resource files and `knowledge://` URI mappings remain unchanged for Claude, Gemini, and other MCP clients. When a root resource changes, update the corresponding packaged reference before publishing a new plugin version.
-
-The current OpenAI public-plugin workflow uses one complete portable ZIP rather than separate form uploads for metadata and skills. The maintained package source is:
-
-`openai-plugin/montis-icu-coach/`
-
-It contains the portable `plugin.json`, production `mcp.json`, listing icons, the `montis-coaching` skill, and the `montis-plan-builder` skill. The upload-ready archive is stored alongside that source:
-
-`openai-plugin/montis-icu-coach-openai-plugin-2.0.2.zip`
-
-Upload that archive as a new version of the existing **Montis.icu Coach** plugin. Do not upload a portal-generated `.app.json` binding or create a duplicate plugin for the same MCP URL.
-
-The hosted MCP may also expose the MCP Skills extension (`capabilities.extensions["io.modelcontextprotocol/skills"]`, `skills/list`, and `skills/get`) and skill files through `resources/read`. Standard `resources/list` and `resources/read` entries using `knowledge://` URIs remain valid MCP resources, but they do not replace the skills bundled in the public plugin ZIP.
-
 ## MCP tools
 
 The hosted MCP service exposes Montis capabilities through tools rather than implementing coaching logic in the language model.
@@ -128,7 +112,7 @@ The exact live tool schema is defined by the hosted service. Use `tools/list` ag
 
 The MIT-licensed Python coaching engine is maintained separately in:
 
-`https://github.com/revo2wheels/intervalsicugptcoach`
+`https://github.com/revo2wheels/intervalsicugptcoach-public`
 
 The engine is responsible for deterministic coaching computation and governed semantic output. It can operate from locally acquired Intervals.icu data or from prefetched evidence supplied by the hosted Montis Edge service.
 
@@ -155,7 +139,7 @@ The following remain private parts of the hosted Montis service and are not part
 - Cloudflare Worker implementation
 - OAuth client secrets
 - JWT signing secrets
-- `MONTIS_INTERNAL_KEY`
+- Internal service keys
 - KV and D1 bindings/data
 - Intervals.icu stored tokens
 - browser session data
@@ -175,7 +159,7 @@ Changes to a resource file must remain compatible with the resource URI expected
 - Montis product: `https://www.montis.icu/`
 - Montis science: `https://www.montis.icu/science.html`
 - Montis technical design: `https://www.montis.icu/pipeline.html`
-- Montis Python engine: `https://github.com/revo2wheels/intervalsicugptcoach`
+- Montis Python engine: `https://github.com/revo2wheels/intervalsicugptcoach-public`
 
 ## License
 
