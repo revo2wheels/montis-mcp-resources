@@ -14,4 +14,6 @@ dependencies:
       url: "https://montis.icu/mcp"
 
 policy:
+  products:
+    - "CHAT"
   allow_implicit_invocation: true
