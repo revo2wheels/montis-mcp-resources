@@ -72,7 +72,7 @@ For **strength** and other auxiliaries, follow `references/strength_skill.md` (e
 - **Repeat blocks**: put the repeat header (`Main Set 3x`, or `3x`) on **its own line with no leading hyphen**, and leave **one blank line before and after** the block; steps inside start with `"- "`.
 - **Per-sport intensity anchor:**
   - **Ride/bike** with FTP → bare `%` of FTP (`"- 10m 85%"`, `"- 8m 105%"`); no FTP → heart rate (`"- 15m 75% HR"`, `"- 5m 80% LTHR"`, `"- 20m 145bpm"`). Never write `"% FTP"` — bare `%` only.
-  - **Run** → **never** bare `%`; use pace (`"- 10m 5:00/km Pace"`, `"- 4m 105% Pace"`) or heart rate.
+  - **Run** → the first metric in the run's `load_order` (Intervals.icu Training Load Priority, `meta.athlete.profiles.run.load_order`) that has a threshold set: `POWER` → bare `%` of FTP (`"- 10m 75%"`), `PACE` → pace (`"- 10m 5:00/km Pace"`, `"- 4m 105% Pace"`), `HR` → `% LTHR` or HR zones (`"- 10m 95% LTHR"`, `"- 40m Z2 HR"`). An explicit athlete request wins. If `load_order` is unknown: pace, never bare `%`.
   - **Swim** → pace per 100 (`"- 100m 1:45/100m Pace"`) or distance pace; never bare `%`.
   - **Strength (`WeightTraining`)** → `movement sets×reps @ RPE/RIR` (`"- Goblet Squat 3x8 @ RPE 7"`); never endurance/percent/pace syntax. Don't invent kg/lb loads unless the athlete gave them.
   - **Yoga/mobility/recovery** → simple steady instruction, no complex intensity.

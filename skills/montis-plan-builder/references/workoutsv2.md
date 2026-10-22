@@ -436,10 +436,17 @@ NOTHING ELSE.
 
 If `type = Run`:
 
-- Prefer numeric Pace
-- Pace SHOULD include `Pace`
-- MUST NOT use FTP unless explicitly requested
-- HR allowed ONLY if explicitly requested
+- An explicit athlete request for a metric ALWAYS wins
+- Otherwise use the FIRST metric in the run's `load_order` (Intervals.icu Training Load Priority: `meta.athlete.profiles.run.load_order` in a Montis report, or the Run settings from `get_sport_settings`) that has a threshold set:
+  - `POWER` (FTP) → % of FTP, e.g. `75%`
+  - `PACE` (threshold pace) → % Pace, e.g. `78-82% Pace`
+  - `HR` (LTHR) → % LTHR or HR zones, e.g. `95% LTHR`, `Z2 HR`
+- Library run workouts keep their structure; only the anchor changes, e.g. `Z2 Pace` → `Z2 HR`
+- If `load_order` is unknown:
+  - Prefer numeric Pace
+  - Pace SHOULD include `Pace`
+  - MUST NOT use FTP unless explicitly requested
+  - HR allowed ONLY if explicitly requested
 
 ---
 
@@ -3400,9 +3407,8 @@ Use cases:
 
 Selection rules:
 
-- Prefer Pace-based versions for Run unless the user explicitly asks for HR-based workouts.
-- Use HR-based aerobic runs only when the user asks for heart-rate based prescription.
-- Do not mix HR and Pace anchors in one workout.
+- Choose the Power, Pace or HR version by the run target metric in Section 14 (an explicit athlete request wins; Pace when `load_order` is unknown). With no version in that metric, keep the structure and change only the anchor.
+- Do not mix Power, Pace and HR anchors in one workout.
 - Do not pass estimated TSS. Intervals.icu calculates load from the prescription.
 - Total duration must equal the sum of listed intervals.
 
