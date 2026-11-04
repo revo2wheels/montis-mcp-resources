@@ -1,6 +1,6 @@
 ---
 name: montis-plan-builder
-description: Build a multi-week, block-periodised Montis training plan from authorized Intervals.icu data — governed weekly TSS/hours targets, event-aware structure, valid Intervals.icu workouts — and write it to the athlete's calendar on confirmation.
+description: Build a multi-week, block-periodised Montis training plan from authorized Intervals.icu data — governed weekly TSS/hours targets, event-aware structure, Run and Ride race plans for an A race (marathon, half, 10K; crit, road race, time trial, cyclocross, gran fondo, gravel), valid Intervals.icu workouts — and write it to the athlete's calendar on confirmation.
 ---
 
 # Montis Plan Builder
@@ -24,6 +24,8 @@ Follow these steps in order. Do not skip the deterministic target step — the p
 - **Target event(s)**, priority, date, terrain.
 - Any **custom instructions**.
 
+**Race plan:** a plan up to an **A race** for a Run marathon, half marathon or 10K, or a Ride crit, road race, time trial, cyclocross race, gran fondo or gravel event, is a race plan. Its weeks come from the athlete's own last 4 weeks of that sport and the race, not from the start TSS, block cycle and growth limits above: see `references/race_plans.md`. Only an A race gets a taper. A plan up to a B or C race uses the general plan and stops the day before the race; say that race plans with a taper need an A race.
+
 ### 2. Read the athlete context — the weekly report is the primary source
 
 **Lead with one call: `run_weekly`** (use `overview=true`, or `workflow=true` for the coaching/execution view). The weekly report already carries almost all the context the plan needs — current phase, ADE directive, load (CTL/ATL/TSB, ACWR), physiology/readiness, event targets, planned-vs-completed, and the prescription anchors. Read it before generating; do not answer from memory. See `references/tools_mcp.md`.
@@ -45,6 +47,12 @@ Compute per-week `target_tss`, `target_hours`, `target_duration_minutes`, `phase
 
 These numbers are governance. An LLM will not reliably reproduce the compounding ramp and block/recovery math.
 
+**In a race plan, use `scripts/race_plan.mjs` instead** (`references/race_plans.md`, steps 1 to 4):
+- `detect` names the event.
+- `get_activities` over the last 28 days with `run-baseline` or `ride-baseline` gives the start.
+- `run-weeks` or `ride-weeks` sets each week: its kind (build, lighter, peak, taper, race week), load and hours, the long run or ride, race-pace minutes (Run), and the hard sessions with their tempo and hard minutes (Ride).
+- Without the script, follow the rules in that reference by hand.
+
 ### 4. Generate the plan (LLM)
 
 Draft the sessions for every week. The model chooses session selection, titles, descriptions, intra-week distribution and the rationale — **within** the fixed targets and the rules below.
@@ -62,6 +70,12 @@ Draft the sessions for every week. The model chooses session selection, titles, 
 2. **Volume envelope** — for `MAINTAIN`, keep weekly hours within +5% of target; do not create 14-hour weeks when target is 11.6h.
 3. **Key-session progression** — across loading weeks in a block, recurring quality sessions progress **monotonically** (never regress interval duration, work-in-zone or intensity); if a pathway says `REPEAT_FOR_CONFIRMATION`, hold the exact prescription until confirmed. Reduce only in designated recovery weeks.
 4. **Rationale numeric integrity** — every number in the rationale must match the actual sessions generated.
+
+**In a race plan**, add the session rules that `run-prompt` or `ride-prompt` prints. They outrank the load rules above where the two differ:
+- The long run or ride is exactly its set length, with no spare minutes moved into it.
+- Race-pace minutes (Run), and tempo and hard minutes (Ride), are written as given.
+- Every session is the race's sport, and a rest day is a note.
+- Race day holds no workout: the race is already on the calendar.
 
 For **strength** and other auxiliaries, follow `references/strength_skill.md` (event type `WeightTraining`, sets×reps @ RPE, no endurance/percent syntax, endurance-first interference rules, phase-dependent and single-variable progression).
 
@@ -109,6 +123,10 @@ Produce this JSON shape:
 
 - Run `scripts/periodization.mjs harmonize '<weeksJSON>' '<targetsJSON>'` (or follow `references/periodization.md`) to snap each week's totals onto target by adjusting the longest aerobic session, leaving interval sessions untouched.
 - Clean every `description` with `sanitizeWorkoutDescription` (same script) so each step is valid Intervals.icu DSL.
+- **In a race plan**, reconcile with `scripts/race_plan.mjs run-reconcile` or `ride-reconcile` instead of `harmonize`. It does the following:
+  - Minutes and load come from each session's own steps, and the long session keeps its set length.
+  - Ride only: a lighter, taper or race week keeps one short hard session.
+  - Then check: if more than a quarter of the sessions have no step lines, or (Ride) most build and peak weeks have no work above 105%, write those weeks again.
 
 ### 6. Always show the plan first (never write on this step)
 
@@ -120,11 +138,13 @@ Present the finished plan to the athlete before touching the calendar:
 
 **Present it visually, matched to the client:**
 
-- **Always** render a per-week table — day, sport, title, duration, TSS — with a simple bar for each week's total TSS against `target_tss` (e.g. unicode block bars), so the ramp is readable in plain text.
+- **Always** render a per-week table — day, sport, title, duration, TSS — with a simple bar for each week's total TSS against `target_tss` (e.g. unicode block bars), so the ramp is readable in plain text. Give the % change on the week before, so rises, lighter weeks and the taper show. A race plan's table also gives each week's kind, plus the long run and race-pace minutes (Run), or the long ride and hard sessions (Ride).
 - **On clients that render rich content** (claude.ai and Claude Code artifacts): also produce an HTML/SVG view that draws each workout as zone-coloured step segments (parse the `- <dur> <intensity>` steps and the `Main Set Nx` repeats) and a weekly TSS-vs-target chart — a lightweight echo of the app's visualiser. Keep it read-only. On ChatGPT or other text-only surfaces, skip the artifact and rely on the table.
 - Never block the plan summary or the commit step on the visual — the table is the source of truth; the artifact is a convenience.
 
 Then ask what to commit — all of it, or a specific week range. This step writes nothing.
+
+**Changes before commit:** the athlete can ask to move, swap, lengthen, add or remove sessions in any weeks. Show each change first, and ask which weeks when they haven't said. Make it only once they agree. Their changes stand even past the plan's own rules, such as a longer long run, as it's their plan. Don't regenerate a plan they have changed without saying their changes will be lost.
 
 ### 7. Commit only after explicit confirmation
 
@@ -145,6 +165,8 @@ The interactive app extras are not part of this skill: the drag-drop step editor
 ## References
 
 - `references/periodization.md` — the deterministic ramp, block/recovery math, weekly reconciliation and DSL cleanup (with a worked example). Read before step 3/5.
+- `references/race_plans.md` — Run and Ride race plans for an A race: when they apply, the steps, and the rules for each distance and event. Read before step 3 of a race plan.
+- `scripts/race_plan.mjs` — the Montis app's own race plan code, bundled and dependency-free: event detection, the athlete's start, the weeks, the session rules and reconciliation. Run it with no arguments for its commands.
 - `references/workoutsv2.md` — Intervals.icu workout and interval construction rules. Read before writing any workout or calendar event.
 - `references/strength_skill.md` — strength methodology, progression and endurance-strength integration.
 - `references/tools_mcp.md` — exact MCP tool selection, parameters, sequencing and error handling.
