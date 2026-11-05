@@ -82,17 +82,35 @@ For current connection and testing instructions, see the hosted documentation at
 
 ## Public MCP resources
 
-The Montis MCP service uses these public knowledge resources:
+The Montis MCP service serves these public knowledge resources from the `skills/` folder, the same files the Claude and ChatGPT skills ship with:
 
 | MCP resource URI | Repository file | Purpose |
 |---|---|---|
-| `knowledge://system/tooling` | `tools_mcp.md` | Tool orchestration rules and execution semantics |
-| `knowledge://training/workout-builder` | `workoutsv2.md` | Workout generation and interval construction rules |
-| `knowledge://coaching/question-bank` | `question_bank_coaching.md` | Adaptive coaching prompts and questioning logic |
-| `knowledge://coaching/decision-tree` | `question_bank_what_next.md` | Progression and follow-up coaching decision logic |
-| `knowledge://coaching/montis-icu-skill` | `montis_icu_claude_skill_mcp_resource.md` | Montis coaching-analysis guidance for MCP-capable AI clients |
+| `knowledge://system/tooling` | `skills/montis-coaching/references/tools_mcp.md` | Tool orchestration rules and execution semantics |
+| `knowledge://training/workout-builder` | `skills/montis-coaching/references/workoutsv2.md` | Workout generation and interval construction rules |
+| `knowledge://training/strength` | `skills/montis-coaching/references/strength_skill.md` | Strength-training methodology, endurance integration and progression rules |
+| `knowledge://coaching/question-bank` | `skills/montis-coaching/references/question_bank_coaching.md` | Adaptive coaching prompts and questioning logic |
+| `knowledge://coaching/decision-tree` | `skills/montis-coaching/references/question_bank_what_next.md` | Progression and follow-up coaching decision logic |
+| `knowledge://coaching/montis-icu-skill` | `skills/montis-coaching/SKILL.md` | The Montis coaching skill for MCP-capable AI clients |
+| `knowledge://coaching/terrain-execution` | `skills/montis-coaching/references/terrain_execution.md` | Terrain-execution analysis, segmentation, limiter detection and confidence rules |
+| `knowledge://training/plan-builder` | `skills/montis-plan-builder/SKILL.md` | The Montis plan builder skill: multi-week periodised plans and Run and Ride race plans for an A race |
+| `knowledge://training/periodization` | `skills/montis-plan-builder/references/periodization.md` | Deterministic weekly ramp, block and recovery math, weekly reconciliation |
+| `knowledge://training/race-plans` | `skills/montis-plan-builder/references/race_plans.md` | Run and Ride race plan rules per distance and event |
 
-These files are runtime knowledge resources. Their filenames and resource mappings should therefore be treated as stable interface contracts unless the corresponding private Edge configuration is updated at the same time.
+When serving a resource, the MCP service removes skill front matter and the zip-install note, and turns `references/<file>.md` paths into the matching `knowledge://` URI. The files themselves are not changed. The `scripts/*.mjs` files are not served: MCP clients follow the reference rules by hand.
+
+The service also offers two prompts that load a whole skill:
+
+| MCP prompt | Loads |
+|---|---|
+| `montis_coaching` | `knowledge://coaching/montis-icu-skill` |
+| `montis_plan_builder` | `knowledge://training/plan-builder` |
+
+Both take an optional `request` argument, added after the skill text. A third prompt, `calendar_assistant`, guides safe calendar changes.
+
+These files are runtime knowledge resources. Their paths and resource mappings should therefore be treated as stable interface contracts unless the corresponding private Edge configuration is updated at the same time.
+
+The older copies in the repository root (`tools_mcp.md`, `workoutsv2.md`, `strength_skill.md`, `question_bank_coaching.md`, `question_bank_what_next.md`, `montis_icu_claude_skill_mcp_resource.md`) are no longer served and will be removed.
 
 ## MCP tools
 
@@ -151,7 +169,7 @@ No production secret values should ever be committed to this repository.
 
 ## Development rule
 
-Changes to a resource file must remain compatible with the resource URI expected by the hosted MCP service. If a filename or resource URI changes, the corresponding Cloudflare `RESOURCE_MAP` must be updated before deployment.
+Changes to a resource file must remain compatible with the resource URI expected by the hosted MCP service. If a file under `skills/` is moved or renamed, or a resource URI changes, the corresponding Cloudflare `RESOURCE_MAP` must be updated before deployment.
 
 ## Related documentation
 
