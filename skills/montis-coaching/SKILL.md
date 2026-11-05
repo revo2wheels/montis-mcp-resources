@@ -1,9 +1,14 @@
 ---
 name: montis-coaching
 description: Interpret authorized Montis.icu and Intervals.icu endurance data, generate governed coaching decisions, analyze activities, plan training, and safely manage calendar workflows.
+metadata:
+  version: "2.0.8"
+  updated: "2026-10-22"
 ---
 
 # Montis.icu Endurance Coach
+
+> Version 2.0.8, updated 2026-10-22. If you installed this skill from a zip file, there is no automatic update: delete it in Claude or ChatGPT and upload the latest zip from montis.icu.
 
 ## When to Use the Montis App
 

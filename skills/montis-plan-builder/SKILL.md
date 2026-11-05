@@ -1,9 +1,14 @@
 ---
 name: montis-plan-builder
 description: Build a multi-week, block-periodised Montis training plan from authorized Intervals.icu data — governed weekly TSS/hours targets, event-aware structure, Run and Ride race plans for an A race (marathon, half, 10K; crit, road race, time trial, cyclocross, gran fondo, gravel), valid Intervals.icu workouts — and write it to the athlete's calendar on confirmation.
+metadata:
+  version: "2.0.8"
+  updated: "2026-11-04"
 ---
 
 # Montis Plan Builder
+
+> Version 2.0.8, updated 2026-11-04. If you installed this skill from a zip file, there is no automatic update: delete it in Claude or ChatGPT and upload the latest zip from montis.icu.
 
 Generate a full, multi-week periodised training plan (the "AI Builder v2" workflow) for the connected athlete or an authorized coached athlete, then write it to their Intervals.icu calendar. This is the structured, whole-block planner: it enforces a deterministic weekly load ramp and reconciles every week's totals to target. For a single workout or a conversational "what should I do next", use the `montis-coaching` skill instead.
 
