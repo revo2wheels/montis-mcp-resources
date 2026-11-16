@@ -22,7 +22,7 @@ This repository contains the public knowledge and instruction resources consumed
 Intervals.icu
     ↓
 Montis Cloudflare Edge Services       [private]
-    ├─ OAuth / sessions
+    ├─ OAuth / sessions 
     ├─ REST API
     ├─ MCP protocol + tool dispatch
     ├─ Intervals.icu data acquisition
@@ -59,6 +59,7 @@ Supported AI clients identify themselves with a **Client ID Metadata Document (C
 | Client | Client ID (metadata document URL) | Redirect |
 |---|---|---|
 | ChatGPT | `https://chatgpt.com/oauth/client.json` | `https://chatgpt.com/connector_platform_oauth_redirect` |
+| Codex | `https://chatgpt.com/oauth/codex/client.json` | `http://localhost:<port>/callback` (any local port) |
 | Claude (web, desktop, mobile) | `https://claude.ai/oauth/mcp-oauth-client-metadata` | `https://claude.ai/api/mcp/auth_callback` |
 | Claude Code | `https://claude.ai/oauth/claude-code-client-metadata` | `http://localhost:<port>/callback` (any local port) |
 
@@ -66,6 +67,46 @@ Other MCP clients, and connections set up before CIMD, keep using the predefined
 
 ```text
 intervals-mcp
+```
+
+#### Gemini
+
+The Gemini app connects with the predefined public client:
+
+1. Open `https://gemini.google.com/devmode` (Settings > Gemini Apps Developer Mode) and choose **Create new**.
+2. MCP server URL: `https://montis.icu/mcp`
+3. Under **Additional settings**, set Client ID to `intervals-mcp` and leave Client secret empty.
+4. Choose **Next**, sign in with Intervals.icu, then choose **Allow** on the Montis page.
+
+#### Cursor and VS Code
+
+Both take the predefined public client in their MCP configuration file. These entries follow each editor's own documentation and have not yet been tested with Montis.
+
+Cursor (`~/.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "montis": {
+      "url": "https://montis.icu/mcp",
+      "auth": { "CLIENT_ID": "intervals-mcp" }
+    }
+  }
+}
+```
+
+VS Code with GitHub Copilot (`.vscode/mcp.json`):
+
+```json
+{
+  "servers": {
+    "montis": {
+      "type": "http",
+      "url": "https://montis.icu/mcp",
+      "oauth": { "clientId": "intervals-mcp" }
+    }
+  }
+}
 ```
 
 The MCP service currently exposes the standard protocol operations used by supported clients, including:
