@@ -87,8 +87,6 @@ Then add the two Montis Skills. Download them:
 2. Click Upload a SKILL.md / .zip file.
 3. Toggle the skill on, then type / or @ followed by the skill name in any chat to use it.
 
-Gemini in Chrome takes no script files in Skills.
-
 #### Cursor and VS Code
 
 Both take the predefined public client in their MCP configuration file. These entries follow each editor's own documentation and have not yet been tested with Montis.
