@@ -78,13 +78,16 @@ The Gemini app connects with the predefined public client:
 3. Under **Additional settings**, set Client ID to `intervals-mcp` and leave Client secret empty.
 4. Choose **Next**, sign in with Intervals.icu, then choose **Allow** on the Montis page.
 
-To add the Montis Skills to the Gemini app, download `skills/montis-coaching-gemini-skill.zip` and `skills/montis-plan-builder-gemini-skill.zip` (the same skills without the icons and the ChatGPT `agents/` file), then:
+Then add the two Montis Skills. Download them:
+
+- [montis-coaching-gemini-skill.zip](https://raw.githubusercontent.com/revo2wheels/montis-mcp-resources/main/skills/montis-coaching-gemini-skill.zip)
+- [montis-plan-builder-gemini-skill.zip](https://raw.githubusercontent.com/revo2wheels/montis-mcp-resources/main/skills/montis-plan-builder-gemini-skill.zip)
 
 1. Open Settings (or Customize) in the bottom-left sidebar and click Skills.
 2. Click Upload a SKILL.md / .zip file.
 3. Toggle the skill on, then type / or @ followed by the skill name in any chat to use it.
 
-Gemini in Chrome takes no script files in a skill, so the plan builder's `scripts/` cannot be added there.
+Gemini in Chrome takes no script files in Skills.
 
 #### Cursor and VS Code
 
