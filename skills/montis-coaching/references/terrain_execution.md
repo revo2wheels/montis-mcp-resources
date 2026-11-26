@@ -118,6 +118,15 @@ Primary Metrics:
 
 ---
 
+## Undulating Terrain
+
+A segment with short climbs and descents inside it that its net grade does not show (for example hill repeats
+on a short slope, or a twisty trail). The tool labels it `undulating` when its net grade is flat and it has at
+least 1 m up and 1 m down per 100 m; `elevation_gain_m` and `elevation_loss_m` give every rise and drop inside it.
+Treat it as climbing ground, not as flat running.
+
+---
+
 ## Rolling Terrain
 
 Grade:
@@ -607,6 +616,8 @@ Each segment should contain:
   "terrain": "",
   "grade_pct": 0,
   "elevation_delta_m": 0,
+  "elevation_gain_m": 0,
+  "elevation_loss_m": 0,
   "execution_state": "",
   "limiter": "",
   "coach_note": ""

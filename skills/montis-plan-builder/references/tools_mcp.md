@@ -212,7 +212,7 @@ Pace Curves → get_pace_curves → params: type*, curves?, athleteID? → pace 
 
 HR Curves → get_hr_curves → params: curves?, type?, athleteID? → HR curve modelling
 
-Power-HR Curve → get_power_hr_curve → params: start*, end*, athleteID? → power vs heart rate relationship
+Power-HR Curve → get_power_hr_curve → params: start*, end*, type?, athleteID? → power vs heart rate relationship (type = the sport, Ride or Run: pass it so bike and running power are never mixed)
 
 Activity HR Curve → get_activity_hr_curve → params: activity_id*, athleteID? → heart rate curve for a single activity
 
