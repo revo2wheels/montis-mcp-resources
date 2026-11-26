@@ -2,7 +2,7 @@
 
 This is the deterministic layer of the Montis plan builder. It fixes the **weekly load ramp**, the **block/recovery structure**, and the **weekly-total reconciliation** so the plan's periodization is mathematically correct and not left to the model's judgement.
 
-Prefer running `scripts/periodization.mjs` (a verbatim, dependency-free port of the Montis engine functions) to compute the numbers. Only follow the rules below by hand when you cannot run the script. **Do not free-hand the TSS ramp** — small drift compounds across a block and breaks the periodization.
+Prefer running `scripts/periodization.js` (a verbatim, dependency-free port of the Montis engine functions) to compute the numbers. Only follow the rules below by hand when you cannot run the script. **Do not free-hand the TSS ramp** — small drift compounds across a block and breaks the periodization.
 
 The best fidelity is to call a Montis MCP tool for these targets if one is exposed (`tools/list`). Absent that, use the script, then the rules.
 
@@ -65,7 +65,7 @@ This deliberately leaves interval/quality sessions untouched and moves flex into
 
 ## Session text cleanup (`sanitize`)
 
-Before writing to the calendar, clean each `description` with the Intervals.icu rules in `references/workoutsv2.md` (also implemented in `scripts/periodization.mjs → sanitizeWorkoutDescription`):
+Before writing to the calendar, clean each `description` with the Intervals.icu rules in `references/workoutsv2.md` (also implemented in `scripts/periodization.js → sanitizeWorkoutDescription`):
 
 - every step line starts with `"- "`;
 - no absolute values in parentheses (`(159w)`, `(160bpm)`, `(Zone 2)`);

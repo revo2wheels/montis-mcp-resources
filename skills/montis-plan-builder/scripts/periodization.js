@@ -5,15 +5,15 @@
  *   - harmonizeGeneratedWorkoutsToWeeklyTargets  (±3% weekly reconciliation)
  *   - sanitizeWorkoutDescription  (Intervals.icu DSL cleanup)
  *
- * Dependency-free. Run with Node 18+, or import the functions.
+ * Dependency-free plain JavaScript (CommonJS). Run with Node 18+, or require the functions.
  *
  * CLI:
- *   node periodization.mjs targets '<loadConstraintsJSON>' '<theme>' ['<baseWeeksJSON>']
- *   node periodization.mjs harmonize '<weeksRecordJSON>' '<targetsJSON>'
- *   node periodization.mjs sanitize '<sportType>'   # description on stdin
+ *   node periodization.js targets '<loadConstraintsJSON>' '<theme>' ['<baseWeeksJSON>']
+ *   node periodization.js harmonize '<weeksRecordJSON>' '<targetsJSON>'
+ *   node periodization.js sanitize '<sportType>'   # description on stdin
  */
 
-export function calculateDeterministicWeekTargets(loadConstraints, theme = "MAINTAIN", baseWeeks) {
+function calculateDeterministicWeekTargets(loadConstraints, theme = "MAINTAIN", baseWeeks) {
   const totalWeeks = Math.max(1, Math.min(24, Number(loadConstraints.duration_weeks) || (baseWeeks && baseWeeks.length) || 8));
 
   let loadingWeeks = 3;
@@ -114,7 +114,7 @@ export function calculateDeterministicWeekTargets(loadConstraints, theme = "MAIN
   return results;
 }
 
-export function harmonizeGeneratedWorkoutsToWeeklyTargets(generatedWeeksRecord, targets) {
+function harmonizeGeneratedWorkoutsToWeeklyTargets(generatedWeeksRecord, targets) {
   const result = {};
   const targetMap = new Map();
   targets.forEach(t => targetMap.set(t.index, t));
@@ -183,7 +183,7 @@ export function harmonizeGeneratedWorkoutsToWeeklyTargets(generatedWeeksRecord, 
   return result;
 }
 
-export function sanitizeWorkoutDescription(raw, sportType) {
+function sanitizeWorkoutDescription(raw, sportType) {
   if (!raw || typeof raw !== "string") return "";
 
   let cleaned = raw
@@ -277,8 +277,10 @@ export function sanitizeWorkoutDescription(raw, sportType) {
   return finalLines.join("\n");
 }
 
+module.exports = { calculateDeterministicWeekTargets, harmonizeGeneratedWorkoutsToWeeklyTargets, sanitizeWorkoutDescription };
+
 // --- CLI ---
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
   const [, , cmd, a, b, c] = process.argv;
   const readStdin = () => new Promise(res => { let s = ""; process.stdin.on("data", d => s += d); process.stdin.on("end", () => res(s)); });
   if (cmd === "targets") {

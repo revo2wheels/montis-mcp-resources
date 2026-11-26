@@ -78,6 +78,14 @@ The Gemini app connects with the predefined public client:
 3. Under **Additional settings**, set Client ID to `intervals-mcp` and leave Client secret empty.
 4. Choose **Next**, sign in with Intervals.icu, then choose **Allow** on the Montis page.
 
+To add the Montis Skills to the Gemini app, download `skills/montis-coaching-gemini-skill.zip` and `skills/montis-plan-builder-gemini-skill.zip` (the same skills without the icons and the ChatGPT `agents/` file), then:
+
+1. Open Settings (or Customize) in the bottom-left sidebar and click Skills.
+2. Click Upload a SKILL.md / .zip file.
+3. Toggle the skill on, then type / or @ followed by the skill name in any chat to use it.
+
+Gemini in Chrome takes no script files in a skill, so the plan builder's `scripts/` cannot be added there.
+
 #### Cursor and VS Code
 
 Both take the predefined public client in their MCP configuration file. These entries follow each editor's own documentation and have not yet been tested with Montis.
@@ -138,7 +146,7 @@ The Montis MCP service serves these public knowledge resources from the `skills/
 | `knowledge://training/periodization` | `skills/montis-plan-builder/references/periodization.md` | Deterministic weekly ramp, block and recovery math, weekly reconciliation |
 | `knowledge://training/race-plans` | `skills/montis-plan-builder/references/race_plans.md` | Run and Ride race plan rules per distance and event |
 
-When serving a resource, the MCP service removes skill front matter and the zip-install note, and turns `references/<file>.md` paths into the matching `knowledge://` URI. The files themselves are not changed. The `scripts/*.mjs` files are not served: MCP clients follow the reference rules by hand.
+When serving a resource, the MCP service removes skill front matter and the zip-install note, and turns `references/<file>.md` paths into the matching `knowledge://` URI. The files themselves are not changed. The `scripts/*.js` files are not served: MCP clients follow the reference rules by hand.
 
 The service also offers two prompts that load a whole skill:
 

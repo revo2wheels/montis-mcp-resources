@@ -2,13 +2,13 @@
 name: montis-plan-builder
 description: Build a multi-week, block-periodised Montis training plan from authorized Intervals.icu data — governed weekly TSS/hours targets, event-aware structure, race plans for an A race in Run (marathon, half, 10K, 5K, 50 km, 100 km), Ride (crit, road race, time trial, cyclocross, XC MTB, gran fondo, gravel), Nordic ski, triathlon, duathlon and rowing, race seasons, training models, valid Intervals.icu workouts — and write it to the athlete's calendar on confirmation.
 metadata:
-  version: "2.0.9"
-  updated: "2026-11-11"
+  version: "2.0.10"
+  updated: "2026-11-26"
 ---
 
 # Montis Plan Builder
 
-> Version 2.0.9, updated 2026-11-11. If you installed this skill from a zip file, there is no automatic update: delete it in Claude or ChatGPT and upload the latest zip from montis.icu.
+> Version 2.0.10, updated 2026-11-26. If you installed this skill from a zip file, there is no automatic update: delete it in Claude or ChatGPT and upload the latest zip from montis.icu.
 
 Generate a full, multi-week periodised training plan (the app's "Plan Builder" workflow) for the connected athlete or an authorized coached athlete, then write it to their Intervals.icu calendar. This is the structured, whole-block planner: it enforces a deterministic weekly load ramp and reconciles every week's totals to target. For a single workout or a conversational "what should I do next", use the `montis-coaching` skill instead.
 
@@ -22,7 +22,7 @@ Follow these steps in order. Do not skip the deterministic target step — the p
 
 - **Duration** in weeks (1–24) and the **start** (default: next Monday).
 - **Periodisation theme**: `MAINTAIN` (hold fitness / consistency), `BUILD` (progressive expansion), `IMPROVE_FTP` or `BASE`. If a target event is set, align the theme and taper to it.
-- **Training model** (Ride, Nordic ski, triathlon, duathlon, rowing; Run without a race): **Theme decides** (default), Polarised, Pyramidal / sub-threshold, Rønnestad pre-fatigued + strength (with compressed peaking on a race plan of 8 weeks or more), or Norwegian singles for Run. `scripts/race_plan.mjs models` prints their rules; on a race plan the event rules set the sessions and the model sets the split of the week around them.
+- **Training model** (Ride, Nordic ski, triathlon, duathlon, rowing; Run without a race): **Theme decides** (default), Polarised, Pyramidal / sub-threshold, Rønnestad pre-fatigued + strength (with compressed peaking on a race plan of 8 weeks or more), or Norwegian singles for Run. `scripts/race_plan.js models` prints their rules; on a race plan the event rules set the sessions and the model sets the split of the week around them.
 - **Block cycle** loading:recovery, e.g. `3:1`, `2:1`, `4:1` (default `3:1`).
 - **Starting weekly TSS**, **weekly target hours**, **training days per week** (2–7).
 - **Growth limits** (default +6% week-2 and week-3) and **recovery-week reduction** (default 40%).
@@ -34,7 +34,7 @@ Follow these steps in order. Do not skip the deterministic target step — the p
 
 **Race season:** three or more races on the calendar inside a plan up to a date (Ride, Run, Nordic ski, rowing) make a race season: each race is its week's hard session, one quality session midweek, openers the day before, the long session the day after a short race, the load held at the start. Ask whether the athlete wants the races treated so; see `references/race_plans.md` step 6.
 
-**Race load:** a race inside the plan with no planned load counts an estimate from the race studies through the athlete's LTHR and max HR (runs by pace): `scripts/race_plan.mjs race-load`. Show it as an estimate (≈) and count it in the week.
+**Race load:** a race inside the plan with no planned load counts an estimate from the race studies through the athlete's LTHR and max HR (runs by pace): `scripts/race_plan.js race-load`. Show it as an estimate (≈) and count it in the week.
 
 ### 2. Read the athlete context — the weekly report is the primary source
 
@@ -52,12 +52,12 @@ Do not fan out across `run_season`, `coach_cockpit`, `get_wellness` etc. as well
 Compute per-week `target_tss`, `target_hours`, `target_duration_minutes`, `phase` (load/recovery) and `training_frequency` from the load constraints and theme, using, in order of preference:
 
 1. a Montis MCP tool for plan targets if `tools/list` exposes one;
-2. otherwise run `scripts/periodization.mjs targets '<loadConstraintsJSON>' '<theme>'`;
+2. otherwise run `scripts/periodization.js targets '<loadConstraintsJSON>' '<theme>'`;
 3. otherwise follow `references/periodization.md` by hand.
 
 These numbers are governance. An LLM will not reliably reproduce the compounding ramp and block/recovery math.
 
-**In a race plan, use `scripts/race_plan.mjs` instead** (`references/race_plans.md`, steps 1 to 6):
+**In a race plan, use `scripts/race_plan.js` instead** (`references/race_plans.md`, steps 1 to 6):
 - `detect` names the event, for every sport.
 - `get_activities` over the last 28 days with `run-baseline`, `ride-baseline`, `ski-baseline`, `row-baseline` or `tri-baseline` gives the start.
 - `run-weeks`, `ride-weeks`, `ski-weeks`, `row-weeks` or `tri-weeks` sets each week: its kind (build, lighter, peak, taper, race week, season), load and hours, the long session, race-pace or race-effort minutes, the hard sessions with their minutes, strength sessions, and for a triathlon the hours and sessions per sport.
@@ -133,9 +133,9 @@ Produce this JSON shape:
 
 ### 5. Reconcile and clean (deterministic)
 
-- Run `scripts/periodization.mjs harmonize '<weeksJSON>' '<targetsJSON>'` (or follow `references/periodization.md`) to snap each week's totals onto target by adjusting the longest aerobic session, leaving interval sessions untouched.
+- Run `scripts/periodization.js harmonize '<weeksJSON>' '<targetsJSON>'` (or follow `references/periodization.md`) to snap each week's totals onto target by adjusting the longest aerobic session, leaving interval sessions untouched.
 - Clean every `description` with `sanitizeWorkoutDescription` (same script) so each step is valid Intervals.icu DSL.
-- **In a race plan**, reconcile with `scripts/race_plan.mjs run-reconcile`, `ride-reconcile`, `ski-reconcile`, `row-reconcile` or `tri-reconcile` instead of `harmonize`. It does the following:
+- **In a race plan**, reconcile with `scripts/race_plan.js run-reconcile`, `ride-reconcile`, `ski-reconcile`, `row-reconcile` or `tri-reconcile` instead of `harmonize`. It does the following:
   - Minutes and load come from each session's own steps, the long session keeps its set length, every empty day gets a rest note, race day holds nothing.
   - Ride only: a lighter, taper or race week keeps the Race Week Sharpener, and a strength session on the wrong day moves to an easy-ride day at least three days before the race.
   - Then check: if more than a quarter of the sessions have no step lines, or (Ride) most build and peak weeks have no work above 105%, write those weeks again.
@@ -178,8 +178,8 @@ The interactive app extras are not part of this skill: the drag-drop step editor
 
 - `references/periodization.md` — the deterministic ramp, block/recovery math, weekly reconciliation and DSL cleanup (with a worked example). Read before step 3/5.
 - `references/race_plans.md` — race plans for an A race in Run, Ride, Nordic ski, triathlon, duathlon and rowing: when they apply, the steps, race seasons, the race-load estimate, the training models, and the rules for each distance and event. Read before step 3 of a race plan.
-- `scripts/race_plan.mjs` — the Montis app's own race plan code for all five sports, bundled and dependency-free: event detection, the athlete's start, the weeks, the session rules, the race-load estimate, the training models and reconciliation. Run it with no arguments for its commands.
+- `scripts/race_plan.js` — the Montis app's own race plan code for all five sports, bundled and dependency-free: event detection, the athlete's start, the weeks, the session rules, the race-load estimate, the training models and reconciliation. Run it with no arguments for its commands.
 - `references/workoutsv2.md` — Intervals.icu workout and interval construction rules. Read before writing any workout or calendar event.
 - `references/strength_skill.md` — strength methodology, progression and endurance-strength integration.
 - `references/tools_mcp.md` — exact MCP tool selection, parameters, sequencing and error handling.
-- `scripts/periodization.mjs` — runnable, dependency-free port of the Montis target/harmonise/sanitise functions.
+- `scripts/periodization.js` — runnable, dependency-free port of the Montis target/harmonise/sanitise functions.

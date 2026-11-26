@@ -1,5 +1,5 @@
 // entry.ts
-import { readFileSync } from "node:fs";
+const { readFileSync } = require("node:fs");
 
 // src/lib/workoutSteps.ts
 var PLAN_ZONE_TOPS = [55, 75, 90, 105, 120, 150];
@@ -2691,25 +2691,25 @@ function estimateRaceLoad(race, ctx) {
 // entry.ts
 var USAGE = `Montis race plans (Run: marathon, half, 10k, 5k, 50k, 100k; Ride: crit, road, tt, cx, xc, fondo, gravel; Nordic ski: 10k, 15k, 30k, marathon, long;
 Triathlon: sprint, olympic, half, ironman, du_sprint, du_standard; Rowing: 2k, head, half, marathon)
-  node race_plan.mjs rules                                   every sport's constants and rule tables
-  node race_plan.mjs models                                  the training models (theme, polarised, pyramidal, ronnestad, singles) and their rules
-  node race_plan.mjs detect '<raceJSON>' [duathlon]          what the race is, for every sport (name, distance, moving_time)
-  node race_plan.mjs run-baseline '<activitiesJSON>' [YYYY-MM-DD]
-  node race_plan.mjs ride-baseline '<activitiesJSON>' [YYYY-MM-DD]
-  node race_plan.mjs ski-baseline '<activitiesJSON>' [YYYY-MM-DD]
-  node race_plan.mjs row-baseline '<activitiesJSON>' [YYYY-MM-DD]   (also row-anchors: the best 2k and 5k on record)
-  node race_plan.mjs tri-baseline '<activitiesJSON>' [YYYY-MM-DD] [duathlon]
-  node race_plan.mjs tri-start <event> '<triBaselineJSON>' [fallbackHours] [fallbackTss]
-  node race_plan.mjs run-pace marathon|half|10k|5k|50k|100k [thresholdKmh]
-  node race_plan.mjs run-weeks|ride-weeks|ski-weeks|row-weeks|tri-weeks '<inputJSON>' ['<baseWeeksJSON>']
-  node race_plan.mjs run-prompt '<runInputJSON>' [PACE|HR|POWER]
-  node race_plan.mjs ride-prompt|ski-prompt|row-prompt|tri-prompt '<inputJSON>'
-  node race_plan.mjs run-reconcile '<weeksJSON>' '<targetsJSON>' [PACE|HR|POWER] ['<bRaceDatesJSON>'] [raceDate] [distance]
-  node race_plan.mjs ride-reconcile '<weeksJSON>' '<targetsJSON>' ['<bRaceDatesJSON>'] [raceDate] [model] ['<offDatesJSON>']
-  node race_plan.mjs ski-reconcile '<weeksJSON>' '<targetsJSON>' ['<bRaceDatesJSON>'] [raceDate]
-  node race_plan.mjs row-reconcile '<weeksJSON>' '<targetsJSON>' ['<bRaceDatesJSON>'] [raceDate] ['<rowInputJSON>']
-  node race_plan.mjs tri-reconcile '<weeksJSON>' '<targetsJSON>' ['<bRaceDatesJSON>'] [raceDate]
-  node race_plan.mjs race-load '<raceJSON>' '<contextJSON>'    the load a race counts when the calendar gives none
+  node race_plan.js rules                                   every sport's constants and rule tables
+  node race_plan.js models                                  the training models (theme, polarised, pyramidal, ronnestad, singles) and their rules
+  node race_plan.js detect '<raceJSON>' [duathlon]          what the race is, for every sport (name, distance, moving_time)
+  node race_plan.js run-baseline '<activitiesJSON>' [YYYY-MM-DD]
+  node race_plan.js ride-baseline '<activitiesJSON>' [YYYY-MM-DD]
+  node race_plan.js ski-baseline '<activitiesJSON>' [YYYY-MM-DD]
+  node race_plan.js row-baseline '<activitiesJSON>' [YYYY-MM-DD]   (also row-anchors: the best 2k and 5k on record)
+  node race_plan.js tri-baseline '<activitiesJSON>' [YYYY-MM-DD] [duathlon]
+  node race_plan.js tri-start <event> '<triBaselineJSON>' [fallbackHours] [fallbackTss]
+  node race_plan.js run-pace marathon|half|10k|5k|50k|100k [thresholdKmh]
+  node race_plan.js run-weeks|ride-weeks|ski-weeks|row-weeks|tri-weeks '<inputJSON>' ['<baseWeeksJSON>']
+  node race_plan.js run-prompt '<runInputJSON>' [PACE|HR|POWER]
+  node race_plan.js ride-prompt|ski-prompt|row-prompt|tri-prompt '<inputJSON>'
+  node race_plan.js run-reconcile '<weeksJSON>' '<targetsJSON>' [PACE|HR|POWER] ['<bRaceDatesJSON>'] [raceDate] [distance]
+  node race_plan.js ride-reconcile '<weeksJSON>' '<targetsJSON>' ['<bRaceDatesJSON>'] [raceDate] [model] ['<offDatesJSON>']
+  node race_plan.js ski-reconcile '<weeksJSON>' '<targetsJSON>' ['<bRaceDatesJSON>'] [raceDate]
+  node race_plan.js row-reconcile '<weeksJSON>' '<targetsJSON>' ['<bRaceDatesJSON>'] [raceDate] ['<rowInputJSON>']
+  node race_plan.js tri-reconcile '<weeksJSON>' '<targetsJSON>' ['<bRaceDatesJSON>'] [raceDate]
+  node race_plan.js race-load '<raceJSON>' '<contextJSON>'    the load a race counts when the calendar gives none
       context: { sport, event, anchors: { ride: { lthr, maxHr }, run: {...}, swim: {...}, nordic_ski: {...}, rowing: {...} }, runThresholdKmh }
 A race season (Ride, Run, ski, rowing): three or more races inside the plan; put "season": true and every other race's week and date in
 b_race_weeks and b_race_dates of the week input, and race_tss from race-load. A JSON argument can be @path (a file) or - (stdin).`;
@@ -2794,9 +2794,8 @@ function main(argv) {
       return out(USAGE);
   }
 }
-var self = String(process.argv[1] || "").replace(/\\/g, "/").split("/").pop();
-if (self && import.meta.url.endsWith(self)) main(process.argv.slice(2));
-export {
+if (require.main === module) main(process.argv.slice(2));
+module.exports = {
   RACE_LOAD,
   RIDE_RACE,
   RIDE_RACE_RULES,

@@ -2,7 +2,7 @@
 
 A plan that ends on an **A race** in a supported event is a race plan. Montis sets every week, and the model writes the sessions to fit. These are the same rules as the Montis app's Plan Builder. The science and test results are in the Montis Help pages: [Plan Science: Run](https://www.montis.icu/help/science_plans_run), [Ride](https://www.montis.icu/help/science_plans_ride), [Nordic ski](https://www.montis.icu/help/science_plans_ski), [Triathlon](https://www.montis.icu/help/science_plans_tri) and [Rowing](https://www.montis.icu/help/science_plans_rowing).
 
-Run `scripts/race_plan.mjs`, a bundle of the app's own race-plan code, for every number. Follow the rules below by hand only when you cannot run the script.
+Run `scripts/race_plan.js`, a bundle of the app's own race-plan code, for every number. Follow the rules below by hand only when you cannot run the script.
 
 ## When it applies
 
@@ -16,7 +16,7 @@ Run `scripts/race_plan.mjs`, a bundle of the app's own race-plan code, for every
 
 ## Steps
 
-1. **Event.** Read the race from `get_calendar` and run `node scripts/race_plan.mjs detect '<raceJSON>'` with its `name`, `distance` or `distance_target` and `moving_time` (add `duathlon` for a duathlon). It gives the sport and the event for every sport. Confirm it with the athlete; a race whose name and length say nothing gives no event: ask which it is.
+1. **Event.** Read the race from `get_calendar` and run `node scripts/race_plan.js detect '<raceJSON>'` with its `name`, `distance` or `distance_target` and `moving_time` (add `duathlon` for a duathlon). It gives the sport and the event for every sport. Confirm it with the athlete; a race whose name and length say nothing gives no event: ask which it is.
 2. **The athlete's start, from the last 4 weeks of that sport only** (rowing: the last 6 months for the pace anchor). Call `get_activities` with `oldest` = today − 28 days (rowing: − 180), `newest` = today and `fields` = `id,type,start_date_local,moving_time,distance,icu_training_load`. Pass the reply to `run-baseline`, `ride-baseline`, `ski-baseline`, `row-baseline` (and `row-anchors` for the best 2k and 5k) or `tri-baseline`; for a triathlon, `tri-start <event> '<baseline>'` gives the start and the hours per sport.
    - Run with no runs: 150 TSS, 2.5 h, longest 8 km, 10 km/h, and say so. Other sports with no history: the start the athlete gives, and say so.
 3. **Race pace (Run).** `run-pace <distance> <thresholdKmh>`, threshold speed = 3600 ÷ threshold pace in s/km. Shares of threshold speed: marathon by likely finish (79 to 93%), half 97%, 10K 103%, 5K 106% (an estimate), 50 km 85%, 100 km 80%.
