@@ -73,7 +73,7 @@ intervals-mcp
 
 The Claude app connects with the predefined public client:
 
-1. Open `https://claude.ai/plugins?filter=connectors-only` and choose **+ Custom**.
+1. Open https://claude.ai/plugins?filter=connectors-only and choose **+ Custom**.
 2. Add Name `Montis icu Coach MCP` and server URL: `https://montis.icu/mcp`
 3. Choose Continue and select `Sign in now` (it wil default to CIMD) then `Add`
 4. Claude will auto connect if you are already logged into Montis and Intervals.icu or prompt for authentication. Click `Allow` if prompted. 
@@ -83,7 +83,7 @@ Then add the two Montis Skills. Download them:
 - [montis-coaching-claude-skill.zip](https://raw.githubusercontent.com/revo2wheels/montis-mcp-resources/main/skills/montis-coaching-claude-skill.zip)
 - [montis-plan-builder-claude-skill.zip](https://raw.githubusercontent.com/revo2wheels/montis-mcp-resources/main/skills/montis-plan-builder-claude-skill.zip)
 
-1. Open `https://claude.ai/plugins?filter=skills-only` and click `Add` and `Upload Plugin`
+1. Open https://claude.ai/plugins?filter=skills-only and click `Add` and `Upload Plugin`
 2. Drop the each Montis skill into Claude Plugin file box and Upload. Type / or @ followed by the skill name in any chat to use it.
 
 
@@ -91,18 +91,18 @@ Then add the two Montis Skills. Download them:
 
 The Gemini app connects with the predefined public client:
 
-1. Open `https://gemini.google.com/customize/connectors` and choose **+ Custom**.
-2. MCP server URL: `https://montis.icu/mcp`
+1. Open https://gemini.google.com/customize/connectors and choose **+ Custom**.
+2. Add MCP server URL: `https://montis.icu/mcp`
 3. Under **Additional settings**, set Client ID to `intervals-mcp` and leave Client secret empty.
-4. Choose **Next**, sign in with Intervals.icu, then choose **Allow** on the Montis page.
+4. Choose **Next**, sign in with Intervals.icu if prompted, then choose **Allow** on the Montis page.
 
-Then add the two Montis Skills 'https://gemini.google.com/customize/skills'. Download them:
+Then add the two Montis Skills. Download them:
 
 - [montis-coaching-gemini-skill.zip](https://raw.githubusercontent.com/revo2wheels/montis-mcp-resources/main/skills/montis-coaching-gemini-skill.zip)
 - [montis-plan-builder-gemini-skill.zip](https://raw.githubusercontent.com/revo2wheels/montis-mcp-resources/main/skills/montis-plan-builder-gemini-skill.zip)
 
-1. Open Settings (or Customize) in the bottom-left sidebar and click Skills.
-2. Click Upload a SKILL.md / .zip file.
+1. At https://gemini.google.com/customize/skills, Open Create/Upload.
+2. Drag the skills files into the `Upload skill box` and click continue
 3. Toggle the skill on, then type / or @ followed by the skill name in any chat to use it.
 
 #### Cursor and VS Code
