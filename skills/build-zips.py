@@ -14,6 +14,7 @@ import os, re, zipfile
 ZIPS = {
     "montis-coaching": ("montis-coaching-claude-skill.zip", "montis-coaching-chatgpt-skill.zip", "montis-coaching-gemini-skill.zip"),
     "montis-plan-builder": ("montis-plan-builder-claude-skill.zip", "montis-plan-builder-chatgpt.zip", "montis-plan-builder-gemini-skill.zip"),
+    "montis-app-trial": ("montis-app-trial-claude-skill.zip", None, None),  # Claude only: it builds a Claude artifact
 }
 GEMINI_TYPES = {".md", ".txt", ".pdf", ".csv", ".js", ".py", ".sh", ".ipynb"}
 
@@ -27,6 +28,8 @@ for name, (claude_zip, chatgpt_zip, gemini_zip) in ZIPS.items():
     if f"Version {ver.group(1)}, updated {upd.group(1)}" not in skill:
         raise SystemExit(f"{name}/SKILL.md: the 'Version ...' line under the title does not match the metadata")
     for z, skip in ((claude_zip, {"agents"}), (chatgpt_zip, set()), (gemini_zip, {"agents", "assets"})):
+        if z is None:
+            continue
         with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
             for root, _dirs, files in os.walk(name):
                 parts = root.split(os.sep)

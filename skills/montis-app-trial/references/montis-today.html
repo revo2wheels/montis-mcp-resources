@@ -1,0 +1,804 @@
+<title>Montis Today</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Montis app language — paper ground, white cards with coloured top stripes, Space Grotesk headings,
+   top tabs on wide screens, a fixed bottom bar on phones. Tokens follow Montis src/index.css. */
+:root {
+  --bg: #f4f6f0;            /* paper */
+  --card: #ffffff;
+  --fg: #0b1816;            /* ink */
+  --muted: #42534f;         /* ink-soft */
+  --muted-bg: #e9eee7;
+  --line: #dce4dd;
+  --green: #19b77a;
+  --green-dark: #087c58;
+  --green-soft: #dff2e9;
+  --aqua: #55d7c0;
+  --blue: #3987f6;
+  --red: #ef5350;
+  --amber: #d97706;
+  --orange: #ea580c;
+  --rose: #e11d48;
+  --violet: #7c3aed;
+  --sky: #0ea5e9;
+  --ctl: #1d4ed8; --atl: #c2410c; --tsb: #047857;
+  --z1: #6b7280; --z2: #3b82f6; --z3: #22c55e; --z4: #eab308; --z5: #f97316; --z6: #ef4444; --z7: #a855f7;
+  --shadow: 0 10px 30px rgba(15,40,33,.06);
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --radius: 1.2rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #071310; --card: #0c201b; --fg: #ffffff; --muted: #a0b3ac; --muted-bg: #122c25; --line: rgba(255,255,255,.12);
+    --green-dark: #55d7c0; --green-soft: #122c25;
+    --amber: #f59e0b; --orange: #fb923c; --rose: #fb7185; --violet: #a78bfa; --sky: #38bdf8; --red: #f87171;
+    --ctl: #60a5fa; --atl: #fb923c; --tsb: #34d399;
+    --shadow: 0 10px 30px rgba(0,0,0,.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #071310; --card: #0c201b; --fg: #ffffff; --muted: #a0b3ac; --muted-bg: #122c25; --line: rgba(255,255,255,.12);
+  --green-dark: #55d7c0; --green-soft: #122c25;
+  --amber: #f59e0b; --orange: #fb923c; --rose: #fb7185; --violet: #a78bfa; --sky: #38bdf8; --red: #f87171;
+  --ctl: #60a5fa; --atl: #fb923c; --tsb: #34d399;
+  --shadow: 0 10px 30px rgba(0,0,0,.3);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; letter-spacing: -0.03em; margin: 0; text-wrap: balance; }
+.wrap { max-width: 980px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+svg.i { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* header */
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.head-row { display: flex; align-items: center; gap: 12px; padding-block: 12px; }
+.logo { width: 42px; height: 42px; border-radius: 12px; flex: none; }
+.brand { flex: 1 1 auto; min-width: 0; }
+.brand h1 { font-size: 1.35rem; line-height: 1.1; font-weight: 700; }
+.brand h1 span { color: var(--green); }
+.who { color: var(--muted); font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.head-actions { display: flex; gap: 8px; }
+button { font: inherit; font-weight: 600; font-size: .85rem; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 7px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+button:hover { border-color: var(--green); }
+button:focus-visible, textarea:focus-visible, .tab:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+button.primary { background: var(--green); border-color: var(--green); color: #06120f; }
+button:disabled { opacity: .5; cursor: default; }
+.tabs { display: flex; gap: 6px; padding-bottom: 10px; overflow-x: auto; scrollbar-width: none; }
+.tab { border-radius: 999px; padding: 6px 14px; color: var(--muted); background: transparent; border: 1px solid transparent; font-size: .85rem; white-space: nowrap; }
+.tab .tl { display: inline; }
+.tab[aria-selected="true"] { color: var(--green-dark); background: var(--green-soft); border-color: color-mix(in srgb, var(--green) 30%, transparent); }
+@media (max-width: 760px) {
+  .tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; height: calc(60px + env(safe-area-inset-bottom, 0px)); padding: 0 max(8px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(8px, env(safe-area-inset-left, 0px)); gap: 0; justify-content: space-around; background: color-mix(in srgb, var(--bg) 95%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-top: 1px solid var(--line); overflow: visible; }
+  .tab { flex: 1 1 0; border-radius: 0; border: none; border-top: 2px solid transparent; flex-direction: column; justify-content: center; gap: 2px; padding: 6px 2px; font-size: .68rem; }
+  .tab .tl { display: none; }
+  .tab[aria-selected="true"] { background: color-mix(in srgb, var(--green) 10%, transparent); color: var(--green); border-top-color: var(--green); }
+  .tab[aria-selected="true"] .tl { display: inline; }
+  main { padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important; }
+  .refresh-label { display: none; }
+}
+@media (min-width: 761px) { .tab svg.i { width: 16px; height: 16px; } }
+
+main { padding-block: 20px 56px; }
+section.panel { display: grid; gap: 18px; }
+.sec-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sec-head h2 { font-size: 1.15rem; color: var(--green-dark); }
+.sec-head .sub { color: var(--muted); font-size: .82rem; }
+.sec-head .stamp { margin-left: auto; color: var(--muted); font-size: .72rem; font-family: var(--font-mono); }
+.block { display: grid; gap: 10px; min-width: 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; min-width: 0; box-shadow: var(--shadow); }
+.card.stripe { border-top: 4px solid var(--s, var(--green)); }
+.pill { display: inline-flex; align-items: center; gap: 4px; padding: .28rem .55rem; border-radius: 999px; background: var(--green-soft); color: var(--green-dark); font-size: .66rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; white-space: nowrap; }
+.pill.solid { color: #fff; background: var(--pc, var(--green)); }
+.pill.tint { color: var(--pc); background: color-mix(in srgb, var(--pc) 14%, transparent); border: 1px solid color-mix(in srgb, var(--pc) 30%, transparent); }
+.pill.grey { background: var(--muted-bg); color: var(--muted); }
+.figs { color: var(--muted); font-size: .86rem; font-variant-numeric: tabular-nums; }
+.msg { color: var(--muted); font-size: .92rem; }
+.small { font-size: .8rem; color: var(--muted); }
+.notice { font-size: .86rem; color: var(--amber); font-weight: 600; }
+
+/* planned session */
+.ev { display: grid; gap: 6px; }
+.ev-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+.ev-name { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; letter-spacing: -0.02em; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.desc { margin: 2px 0 0; padding: 10px 12px; list-style: none; font-family: var(--font-mono); font-size: .8rem; color: var(--muted); background: var(--muted-bg); border-radius: .8rem; display: grid; gap: 2px; }
+.ev-metrics { display: flex; gap: 18px; flex-wrap: wrap; }
+.mini .lbl { font-size: .66rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 700; }
+.mini .val { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* stat tiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.vital { border-radius: var(--radius); padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--vc) 22%, transparent); background: color-mix(in srgb, var(--vc) 4%, var(--card)); display: grid; gap: 4px; }
+.vital .top { display: flex; align-items: center; gap: 8px; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; color: var(--muted); }
+.chip-ic { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; color: var(--vc); background: color-mix(in srgb, var(--vc) 14%, transparent); }
+.chip-ic svg.i { width: 15px; height: 15px; }
+.vital .val { font-family: var(--font-display); font-size: 1.9rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.vital .unit { font-size: .85rem; font-weight: 500; color: var(--muted); margin-left: 4px; }
+.today-box { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.stat { padding: 12px 14px; border-radius: 1rem; background: color-mix(in srgb, var(--muted-bg) 60%, transparent); }
+.stat .lbl { font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 700; }
+.stat .val { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; color: var(--sc, var(--fg)); }
+.stat .unit { font-size: .8rem; font-weight: 500; color: var(--muted); margin-left: 3px; }
+
+/* directive hero */
+.hero { --s: var(--red); display: grid; gap: 14px; }
+.hero-label { display: flex; align-items: center; gap: 8px; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+.directive { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; }
+.cs { display: grid; gap: 6px; }
+.cs div { padding-left: 10px; border-left: 3px solid var(--cc); }
+.cs b { color: var(--cc); font-size: .74rem; text-transform: uppercase; letter-spacing: .1em; margin-right: 6px; }
+.bento { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.tier { display: grid; gap: 6px; align-content: start; }
+.tier .t-k { font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; color: var(--s); }
+.tier .t-v { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; letter-spacing: -0.02em; }
+.tier .t-s { color: var(--muted); font-size: .9rem; overflow-wrap: anywhere; }
+
+/* week */
+.totals { --s: var(--green); display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.prog { display: grid; gap: 12px; }
+.prow { display: grid; gap: 4px; }
+.prow .pl { display: flex; justify-content: space-between; gap: 8px; font-size: .85rem; flex-wrap: wrap; }
+.prow .pl b { font-family: var(--font-display); font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+.bar { height: 10px; border-radius: 99px; background: var(--muted-bg); overflow: hidden; position: relative; }
+.bar i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; }
+.zstrip { display: flex; height: 12px; border-radius: 99px; overflow: hidden; background: var(--muted-bg); max-width: 520px; }
+.zstrip i { height: 100%; }
+.zlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px 16px; font-size: .84rem; font-variant-numeric: tabular-nums; }
+.zlist div { display: flex; align-items: center; gap: 8px; }
+.zlist .sw { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.zlist .n { margin-left: auto; color: var(--muted); font-family: var(--font-mono); font-size: .78rem; }
+.three { font-size: .9rem; color: var(--muted); }
+.three b { color: var(--fg); }
+.insights { display: grid; gap: 8px; }
+.ins { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 1rem; background: color-mix(in srgb, var(--pc) 7%, transparent); }
+.ins .nm { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.ins .nm small { display: block; font-weight: 400; color: var(--muted); font-size: .8rem; }
+.ins .v { font-family: var(--font-mono); font-size: .85rem; color: var(--muted); }
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+th { text-align: left; font-size: .66rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+
+/* activities */
+.acts { display: grid; gap: 8px; }
+.act { display: grid; grid-template-columns: 3.4em 1fr auto; gap: 12px; align-items: center; text-align: left; width: 100%; font-weight: 400; font-size: .92rem; padding: 12px 14px; border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow); }
+.act .d { color: var(--muted); font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; line-height: 1.2; }
+.act .nm { min-width: 0; overflow-wrap: anywhere; font-weight: 600; }
+.act .nm small { display: block; font-weight: 400; }
+.act .r { text-align: right; font-variant-numeric: tabular-nums; font-size: .82rem; color: var(--muted); white-space: nowrap; display: grid; gap: 1px; }
+.act .r b { color: var(--fg); font-family: var(--font-display); font-size: 1rem; }
+.act[aria-expanded="true"] { border-color: var(--green); }
+.held { font-size: .85rem; color: var(--muted); font-style: italic; }
+.ivs { margin: 0; padding-left: 18px; font-family: var(--font-mono); font-size: .82rem; }
+
+/* states */
+.err { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; color: var(--red); font-size: .9rem; background: var(--card); border: 1px solid color-mix(in srgb, var(--red) 30%, transparent); border-radius: var(--radius); padding: 12px 16px; }
+.err .why { display: block; color: var(--muted); font-size: .8rem; margin-top: 2px; }
+.loading { color: var(--muted); font-size: .9rem; display: flex; align-items: center; gap: 8px; padding: 14px 4px; }
+.loading::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--green); animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .loading::before { animation: none; } }
+
+/* ask + coach */
+textarea { width: 100%; min-height: 90px; font: inherit; color: var(--fg); background: var(--card); border: 1px solid var(--line); border-radius: 1rem; padding: 12px 14px; resize: vertical; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.qchips { display: flex; gap: 6px; flex-wrap: wrap; }
+.qchips button { font-size: .8rem; padding: 5px 12px; background: var(--green-soft); color: var(--green-dark); border-color: color-mix(in srgb, var(--green) 30%, transparent); }
+.answer { white-space: pre-wrap; overflow-wrap: anywhere; }
+.coach-card { border-left: 4px solid var(--green); background: color-mix(in srgb, var(--green) 5%, var(--card)); }
+.coach-grid { display: grid; gap: 10px; }
+.page-msg { text-align: center; padding: 48px 0; display: grid; gap: 14px; justify-items: center; max-width: 46ch; margin: 0 auto; }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-today" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></symbol>
+  <symbol id="ic-week" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="ic-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></symbol>
+  <symbol id="ic-ask" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+  <symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+  <symbol id="ic-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></symbol>
+  <symbol id="ic-pulse" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/><path d="M3.2 12H9l.5-1 2 4.5 2-7 1.5 3.5h5.3"/></symbol>
+  <symbol id="ic-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></symbol>
+  <symbol id="ic-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+  <symbol id="ic-gauge" viewBox="0 0 24 24"><path d="m12 14 4-4"/><path d="M3.3 19a10 10 0 1 1 17.4 0"/></symbol>
+  <symbol id="ic-scale" viewBox="0 0 24 24"><path d="M16 16l3-8 3 8c-.9.7-1.9 1-3 1s-2.1-.3-3-1zM2 16l3-8 3 8c-.9.7-1.9 1-3 1s-2.1-.3-3-1zM7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></symbol>
+  <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.7V17c0 .6-.5 1-1 1.2-1.2.5-2 2-2 3.8M14 14.7V17c0 .6.5 1 1 1.2 1.2.5 2 2 2 3.8M18 2H6v7a6 6 0 0 0 12 0z"/></symbol>
+  <symbol id="ic-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9z"/></symbol>
+</svg>
+
+<header>
+  <div class="wrap">
+    <div class="head-row">
+      <img class="logo" src="logo.png" alt="Montis" width="42" height="42">
+      <div class="brand">
+        <h1>Montis <span>Today</span></h1>
+        <div class="who" id="who">Connecting to Montis…</div>
+      </div>
+      <div class="head-actions">
+        <button id="install" type="button" hidden>Install as app</button>
+        <button id="refresh" type="button" aria-label="Refresh"><svg class="i"><use href="#ic-refresh"/></svg><span class="refresh-label">Refresh</span></button>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" id="tab-today" data-tab="today" aria-selected="true"><svg class="i"><use href="#ic-today"/></svg><span class="tl">Today</span></button>
+      <button class="tab" role="tab" id="tab-week" data-tab="week" aria-selected="false"><svg class="i"><use href="#ic-week"/></svg><span class="tl">This week</span></button>
+      <button class="tab" role="tab" id="tab-acts" data-tab="acts" aria-selected="false"><svg class="i"><use href="#ic-activity"/></svg><span class="tl">Activities</span></button>
+      <button class="tab" role="tab" id="tab-ask" data-tab="ask" aria-selected="false" hidden><svg class="i"><use href="#ic-ask"/></svg><span class="tl">Ask Claude</span></button>
+      <button class="tab" role="tab" id="tab-coach" data-tab="coach" aria-selected="false" hidden><svg class="i"><use href="#ic-users"/></svg><span class="tl">Coach</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="page-msg" class="page-msg" hidden></div>
+
+  <section class="panel" id="p-today" data-panel="today">
+    <div class="block">
+      <div class="sec-head"><h2>Coaching directive</h2><span class="sub">Montis's guidance for this week</span></div>
+      <div id="today-guide"><div class="loading">Montis is building your weekly report…</div></div>
+    </div>
+    <div class="block">
+      <div class="sec-head"><h2>Planned today</h2><span class="stamp" id="st-cal"></span></div>
+      <div id="today-plan"><div class="loading">Reading your calendar…</div></div>
+    </div>
+    <div class="block">
+      <div class="sec-head"><h2>Wellness vitals</h2><span class="sub">Today's wellness record</span><span class="stamp" id="st-well"></span></div>
+      <div id="today-well"><div class="loading">Reading today's wellness record…</div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-week" data-panel="week" hidden>
+    <div id="week-body" class="panel"><div class="loading">Montis is building your weekly report…</div></div>
+    <div class="block">
+      <div class="sec-head"><h2>Next 7 days</h2><span class="sub">From your calendar</span></div>
+      <div id="week-next"><div class="loading">Reading your calendar…</div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-acts" data-panel="acts" hidden>
+    <div class="block">
+      <div class="sec-head"><h2>Last 14 days</h2><span class="sub">Tap one to open it</span><span class="stamp" id="st-acts"></span></div>
+      <div id="acts-body"><div class="loading">Reading your activities…</div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-ask" data-panel="ask" hidden>
+    <div class="block">
+      <div class="sec-head"><h2>Ask Claude</h2></div>
+      <p class="small" style="margin:0">Claude reads only the figures this page has loaded and answers from them. It uses your own Claude plan.</p>
+      <div class="qchips" id="qchips">
+        <button type="button">What next?</button>
+        <button type="button">Review fatigue</button>
+        <button type="button">Explain today's directive</button>
+      </div>
+      <label for="q" class="small">Your question</label>
+      <textarea id="q" placeholder="For example: Am I fresh enough for today's session?"></textarea>
+      <div class="row"><button id="ask" class="primary" type="button">Ask</button><button id="stop" type="button" hidden>Stop</button><span class="small" id="ask-note"></span></div>
+      <div id="answer-wrap" class="card stripe" hidden>
+        <div class="hero-label" style="margin-bottom:8px">Claude's answer, from the figures on this page</div>
+        <div id="answer" class="answer"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-coach" data-panel="coach" hidden>
+    <div class="block">
+      <div class="sec-head"><h2>Your athletes</h2></div>
+      <div id="coach-list"></div>
+      <div class="row"><button id="cockpit" type="button" class="primary">Load each athlete's week</button><span class="small">Montis builds a report per athlete, so this takes a while.</span></div>
+      <div id="cockpit-body" class="coach-grid"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const SERVER = "__MONTIS_CONNECTOR_NAME__"; // replace with the connector's exact display name
+  const $ = (id) => document.getElementById(id);
+  let mcp = null, sample = null, desktop = null;
+  let tz = undefined;
+  const data = { wellness: null, calendar: null, weekly: null, activities: null, opened: {} };
+  let loadGen = 0;
+
+  // ---------- helpers ----------
+  function el(tag, props, ...kids) {
+    const n = document.createElement(tag);
+    if (props) for (const [k, v] of Object.entries(props)) {
+      if (v == null || v === false) continue;
+      if (k === "class") n.className = v; else if (k === "text") n.textContent = String(v);
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v);
+    }
+    for (const c of kids.flat()) if (c != null && c !== false) n.append(c instanceof Node ? c : document.createTextNode(String(c)));
+    return n;
+  }
+  function icon(name) {
+    const ns = "http://www.w3.org/2000/svg";
+    const s = document.createElementNS(ns, "svg"); s.setAttribute("class", "i"); s.setAttribute("aria-hidden", "true");
+    const u = document.createElementNS(ns, "use"); u.setAttribute("href", "#ic-" + name); s.append(u); return s;
+  }
+  const has = (v) => v !== null && v !== undefined && v !== "";
+  const fmtNum = (v, d = 1) => typeof v === "number" ? (Number.isInteger(v) ? String(v) : v.toFixed(d).replace(/\.0+$/, "")) : String(v);
+  function fmtDur(s) {
+    if (!has(s)) return null; s = Math.round(Number(s));
+    const h = Math.floor(s / 3600), m = Math.round((s % 3600) / 60);
+    return h ? `${h}h ${String(m).padStart(2, "0")}m` : `${m}m`;
+  }
+  function isoToday() {
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
+    catch { return new Intl.DateTimeFormat("en-CA", { year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
+  }
+  function addDays(iso, n) { const d = new Date(iso + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function shortDay(iso) { const d = new Date(String(iso).slice(0, 10) + "T12:00:00Z"); return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", timeZone: "UTC" }); }
+  function stampText(res) { const t = res?.cache?.storedAt || Date.now(); return new Date(t).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }); }
+
+  // Montis status colours (adeStatusTone / physiology badge)
+  const STATUS = { positive: "var(--green)", good: "var(--green)", neutral: "var(--blue)", sharpening: "var(--blue)", watch: "var(--amber)", caution: "var(--amber)", strain: "var(--orange)", warning: "var(--red)", risk: "var(--rose)", critical: "var(--rose)" };
+  const statusColor = (s) => STATUS[String(s || "").toLowerCase()] || "var(--muted)";
+
+  const ERR = {
+    add: `This app looks for a connector named “${SERVER}”. Add the Montis connector in Claude under Plugins, Connectors. If yours has another name, ask Claude to rebuild the app.`,
+    reauth: "Reconnect the Montis connector.",
+    allow: "Choose Allow when Claude asks.",
+    down: "Montis did not answer just now. Try again in a moment.",
+    other: "Your data could not be read just now.",
+  };
+  function errText(e) {
+    const c = e && e.code;
+    if (c === "server_not_connected" || c === "server_not_found" || c === "selection_required") return ERR.add;
+    if (c === "needs_reauth") return ERR.reauth;
+    if (c === "not_in_manifest" || c === "approval_required" || c === "consent_required" || c === "not_granted" || c === "blocked_by_policy") return ERR.allow;
+    if (c === "server_unavailable" || c === "upstream_error" || c === "rate_limited") return ERR.down;
+    return ERR.other;
+  }
+  function errBox(e, retry) {
+    return el("div", { class: "err", role: "status" }, el("span", { text: errText(e) }), retry ? el("button", { type: "button", onclick: retry, text: "Try again" }) : null);
+  }
+  function put(node, ...kids) { node.replaceChildren(...kids.flat().filter(Boolean)); }
+  function loading(text) { return el("div", { class: "loading", text }); }
+
+  async function call(tool, input) {
+    const once = () => mcp.callTool(SERVER, tool, input);
+    try { return await once(); }
+    catch (e) {
+      if (e && e.retryable) {
+        const wait = Math.min(e.retryAfterMs || 0, 8000) + 600 + Math.random() * 900;
+        await new Promise(r => setTimeout(r, wait));
+        return await once();
+      }
+      throw e;
+    }
+  }
+  function payloadOf(res) {
+    let p = res?.payload;
+    if (typeof p === "string") { try { p = JSON.parse(p); } catch {} }
+    return p;
+  }
+
+  // ---------- tabs ----------
+  function showTab(name) {
+    document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+    document.querySelectorAll("section.panel[data-panel]").forEach(p => { p.hidden = p.dataset.panel !== name; });
+    try { localStorage.setItem("montis-tab", name); } catch {}
+  }
+  $("tabs").addEventListener("click", (ev) => { const t = ev.target.closest(".tab"); if (t && !t.hidden) { showTab(t.dataset.tab); window.scrollTo(0, 0); } });
+
+  // ---------- calendar ----------
+  function catPill(cat) {
+    const c = String(cat || "");
+    if (c.startsWith("RACE")) return el("span", { class: "pill solid", style: "--pc:var(--rose)", text: c.replace("_", " ") });
+    if (c === "NOTE") return el("span", { class: "pill grey", text: "Note" });
+    return el("span", { class: "pill", text: c.replace("_", " ") || "Event" });
+  }
+  async function loadCalendar(gen) {
+    const today = isoToday();
+    put($("today-plan"), loading("Reading your calendar…")); put($("week-next"), loading("Reading your calendar…"));
+    try {
+      const res = await call("get_calendar", { start: today, end: addDays(today, 7) });
+      if (gen !== loadGen) return;
+      const list = payloadOf(res);
+      const events = Array.isArray(list) ? list : (Array.isArray(list?.events) ? list.events : []);
+      data.calendar = events.map(e => ({ id: e.id, start_date_local: e.start_date_local, name: e.name, category: e.category, type: e.type, moving_time: e.moving_time, icu_training_load: e.icu_training_load, description: e.description }));
+      $("st-cal").textContent = stampText(res);
+      const todays = events.filter(e => String(e.start_date_local || "").startsWith(today));
+      if (!todays.length) put($("today-plan"), el("div", { class: "card msg", text: "Nothing planned for today." }));
+      else put($("today-plan"), el("div", { class: "block" }, todays.map(ev => {
+        const lines = String(ev.description || "").split("\n").map(s => s.trim()).filter(Boolean).slice(0, 4);
+        return el("div", { class: "card stripe ev", style: `--s:${String(ev.category || "").startsWith("RACE") ? "var(--rose)" : ev.category === "NOTE" ? "var(--line)" : "var(--green)"}` },
+          el("div", { class: "ev-top" }, el("span", { class: "ev-name", text: ev.name || "Untitled" }), el("div", { class: "chips" }, catPill(ev.category), has(ev.type) ? el("span", { class: "pill grey", text: ev.type }) : null)),
+          (has(ev.moving_time) || has(ev.icu_training_load)) ? el("div", { class: "ev-metrics" },
+            has(ev.moving_time) ? el("div", { class: "mini" }, el("div", { class: "lbl", text: "Time" }), el("div", { class: "val", style: "color:var(--blue)", text: fmtDur(ev.moving_time) })) : null,
+            has(ev.icu_training_load) ? el("div", { class: "mini" }, el("div", { class: "lbl", text: "Load" }), el("div", { class: "val", style: "color:var(--rose)", text: fmtNum(ev.icu_training_load, 0) })) : null) : null,
+          lines.length ? el("ul", { class: "desc" }, lines.map(l => el("li", { text: l }))) : null);
+      })));
+      const later = events.filter(e => String(e.start_date_local || "").slice(0, 10) > today);
+      if (!later.length) put($("week-next"), el("div", { class: "card msg", text: "Nothing planned for the next 7 days." }));
+      else put($("week-next"), el("div", { class: "card tbl-wrap", style: "padding:6px 10px" }, el("table", null,
+        el("thead", null, el("tr", null, el("th", { text: "Day" }), el("th", { text: "Session" }), el("th", { class: "num", text: "Time" }), el("th", { class: "num", text: "Load" }))),
+        el("tbody", null, later.map(ev => el("tr", null,
+          el("td", { style: "font-weight:600;white-space:nowrap", text: shortDay(ev.start_date_local) }),
+          el("td", null, el("div", { style: "font-weight:600", text: ev.name || "Untitled" }), el("div", { class: "chips", style: "margin-top:4px" }, catPill(ev.category), has(ev.type) ? el("span", { class: "pill grey", text: ev.type }) : null)),
+          el("td", { class: "num", text: fmtDur(ev.moving_time) || "–" }),
+          el("td", { class: "num", text: has(ev.icu_training_load) ? fmtNum(ev.icu_training_load, 0) : "–" })))))));
+    } catch (e) {
+      if (gen !== loadGen) return;
+      const retry = () => loadCalendar(loadGen);
+      put($("today-plan"), errBox(e, retry)); put($("week-next"), errBox(e, retry));
+    }
+  }
+
+  // ---------- wellness ----------
+  const WELL = [
+    ["hrv", "Autonomic HRV", "ms", "heart", "#10b981"],
+    ["restingHR", "Resting HR", "bpm", "pulse", "#f43f5e"],
+    ["sleepSecs", "Sleep", "", "moon", "#8b5cf6"],
+    ["sleepScore", "Sleep score", "", "moon", "#8b5cf6"],
+    ["readiness", "Readiness", "", "gauge", "#19b77a"],
+    ["BodyBatteryMax", "Body Battery", "", "zap", "#0ea5e9"],
+    ["weight", "Weight", "kg", "scale", "#64748b"],
+  ];
+  async function loadWellness(gen) {
+    put($("today-well"), loading("Reading today's wellness record…"));
+    try {
+      const res = await call("get_wellness", { date: isoToday() });
+      if (gen !== loadGen) return;
+      const p = payloadOf(res);
+      const rec = Array.isArray(p) ? p[0] : p;
+      data.wellness = rec || null;
+      $("st-well").textContent = stampText(res);
+      const kids = [];
+      if (rec && (has(rec.ctl) || has(rec.atl))) {
+        kids.push(el("div", { class: "card stripe", style: "--s:var(--orange)" },
+          el("div", { class: "hero-label", style: "margin-bottom:10px" }, "Today ", el("span", { class: "pill", text: "☀ at sunrise" })),
+          el("div", { class: "today-box" },
+            has(rec.ctl) ? el("div", { class: "stat", style: "--sc:var(--ctl)" }, el("div", { class: "lbl", text: "Fitness (CTL)" }), el("div", { class: "val", text: fmtNum(rec.ctl) })) : null,
+            has(rec.atl) ? el("div", { class: "stat", style: "--sc:var(--atl)" }, el("div", { class: "lbl", text: "Fatigue (ATL)" }), el("div", { class: "val", text: fmtNum(rec.atl) })) : null)));
+      }
+      const tiles = rec ? WELL.filter(([k]) => has(rec[k])).map(([k, label, unit, ic, col]) =>
+        el("div", { class: "vital", style: `--vc:${col}` },
+          el("div", { class: "top" }, el("span", { class: "chip-ic" }, icon(ic)), label),
+          el("div", { class: "val" }, k === "sleepSecs" ? fmtDur(rec[k]) : fmtNum(rec[k]), unit ? el("span", { class: "unit", text: unit }) : null))) : [];
+      kids.push(tiles.length ? el("div", { class: "tiles" }, tiles) : el("div", { class: "card msg", text: "No wellness figures recorded for today yet." }));
+      put($("today-well"), kids);
+    } catch (e) {
+      if (gen !== loadGen) return;
+      put($("today-well"), errBox(e, () => loadWellness(loadGen)));
+    }
+  }
+
+  // ---------- weekly ----------
+  function directiveNode(text) {
+    if (!has(text)) return null;
+    const t = String(text);
+    const m = t.match(/Can:\s*([\s\S]*?)\s*Should:\s*([\s\S]*)/i);
+    if (m) return el("div", { class: "cs" },
+      el("div", { style: "--cc:var(--green)" }, el("b", { text: "Can" }), m[1].trim()),
+      el("div", { style: "--cc:var(--rose)" }, el("b", { text: "Should" }), m[2].trim()));
+    return el("div", { class: "directive", text: t });
+  }
+  function tier(label, color, value, sub, status) {
+    if (!has(value) && !has(sub)) return null;
+    return el("div", { class: "card stripe tier", style: `--s:${color}` },
+      el("div", { class: "t-k", text: label }),
+      has(value) ? el("div", { class: "t-v" }, value, has(status) ? " " : null, has(status) ? el("span", { class: "pill solid", style: `--pc:${statusColor(status)};margin-left:6px;vertical-align:middle`, text: status }) : null) : null,
+      has(sub) ? el("div", { class: "t-s", text: sub }) : null);
+  }
+  function renderGuidance(sg) {
+    const acts = Array.isArray(sg.actions) ? sg.actions : [];
+    const find = (t) => acts.find(a => a && a.type === t) || {};
+    const fa = Array.isArray(sg.future_actions) ? sg.future_actions[0] || {} : {};
+    const ps = sg.wellness?.physiology_state || {};
+    const lp = sg.training_volume?.load_pattern || {};
+    const ne = sg.event_targets?.next_event;
+    const kids = [];
+    if (sg.meta?.recency && sg.meta.recency.is_current === false) kids.push(el("div", { class: "notice", text: "This report is not for the current week." }));
+    const dir = find("adaptive_summary").directive;
+    const guidance = typeof sg.training_guidance === "string" ? sg.training_guidance : null;
+    kids.push(el("div", { class: "card stripe hero" },
+      el("div", { class: "hero-label" }, icon("bolt"), "Coaching directive"),
+      directiveNode(dir) || el("div", { class: "msg", text: "This report carries no directive." }),
+      has(guidance) ? el("div", { class: "msg", style: "color:var(--fg)", text: guidance }) : null));
+    const bento = [
+      tier("Load state", "var(--orange)", lp.label, lp.meaning, lp.status),
+      tier("Autonomic readiness", "var(--green)", find("state_action").readiness_signal, null),
+      tier("Physiology", "var(--blue)", ps.label, ps.meaning, ps.status),
+      tier("System progression", "var(--violet)", null, find("system_guidance").message),
+      tier("Next two weeks", "var(--aqua)", fa.label, fa.reason),
+      ne ? tier("Next event", "var(--rose)", ne.name, [ne.date, has(ne.days_to_event) ? `in ${ne.days_to_event} days` : null].filter(has).join(" · ")) : null,
+    ].filter(Boolean);
+    if (bento.length) kids.push(el("div", { class: "bento" }, bento));
+    put($("today-guide"), kids);
+  }
+  function stat(label, v, unit, color, sub) {
+    if (!has(v)) return null;
+    return el("div", { class: "stat", style: color ? `--sc:${color}` : null }, el("div", { class: "lbl", text: label }),
+      el("div", { class: "val" }, fmtNum(v), unit ? el("span", { class: "unit", text: unit }) : null), sub ? el("div", { class: "small", text: sub }) : null);
+  }
+  function progRow(label, done, of, unit, color, note) {
+    if (!has(done)) return null;
+    const pct = has(of) && Number(of) > 0 ? Math.max(0, Math.min(100, (Number(done) / Number(of)) * 100)) : 0;
+    return el("div", { class: "prow" },
+      el("div", { class: "pl" }, el("span", null, label), el("span", null, el("b", { text: fmtNum(done) }), has(of) ? ` of ${fmtNum(of)} ${unit}` : ` ${unit}`)),
+      has(of) ? el("div", { class: "bar" }, el("i", { style: `width:${pct}%;background:${color}` })) : null,
+      note ? el("div", { class: "small", text: note }) : null);
+  }
+  const ZL = { z1: "Z1 recovery", z2: "Z2 endurance", z3: "Z3 tempo", z4: "Z4 threshold", z5: "Z5 VO2max", z6: "Z6 anaerobic", z7: "Z7 neuromuscular" };
+  function renderWeek(sg) {
+    const tv = sg.training_volume || {};
+    const mc = sg.current_ISO_weekly_microcycle || {};
+    const zt = sg.zone_time || {};
+    const iv = sg.insight_view || {};
+    const out = [];
+    if (sg.meta?.recency?.is_current === false) out.push(el("div", { class: "notice", text: "This report is not for the current week." }));
+    out.push(el("div", { class: "block" },
+      el("div", { class: "sec-head" }, el("h2", { text: "Last 7 days" }), has(sg.meta?.period) ? el("span", { class: "sub", text: sg.meta.period }) : null),
+      el("div", { class: "card stripe" },
+        el("div", { class: "totals" }, [stat("Distance", tv.distance_km, "km", "var(--green)"), stat("Hours", tv.hours, "h", "var(--blue)"), stat("TSS", tv.tss, "", "var(--rose)"), stat("CTL", tv.CTL, "", "var(--ctl)", "fitness"), stat("ATL", tv.ATL, "", "var(--atl)", "fatigue"), stat("TSB", tv.TSB, "", "var(--tsb)", "form")].filter(Boolean)),
+        (has(lp(tv).label)) ? el("div", { class: "row", style: "margin-top:12px" }, el("span", { class: "pill solid", style: `--pc:${statusColor(tv.load_pattern.status)}`, text: tv.load_pattern.label }), has(tv.load_pattern.meaning) ? el("span", { class: "msg", text: tv.load_pattern.meaning }) : null) : null)));
+    if (has(mc.completed_tss) || has(mc.completed_hours)) {
+      out.push(el("div", { class: "block" },
+        el("div", { class: "sec-head" }, el("h2", { text: "This calendar week" }), has(mc.week_iso) ? el("span", { class: "sub", text: mc.week_iso }) : null),
+        el("div", { class: "card stripe prog", style: "--s:var(--rose)" },
+          progRow("Weekly TSS", mc.completed_tss, mc.weekly_target_tss, "TSS", "var(--rose)",
+            [has(mc.planned_remaining_tss) ? `${fmtNum(mc.planned_remaining_tss)} still planned` : null, has(mc.projected_total_tss) ? `projected ${fmtNum(mc.projected_total_tss)}` : null].filter(Boolean).join(" · ")),
+          progRow("Weekly time", mc.completed_hours, mc.projected_hours, "h projected", "var(--blue)", null))));
+    }
+    const zm = zt.zones_min;
+    if (zm && typeof zm === "object") {
+      const total = Number(zt.total_min) || 0;
+      const zs = ["z1", "z2", "z3", "z4", "z5", "z6", "z7"].filter(z => has(zm[z]));
+      const th = zt.three_zone || {};
+      const w = (m) => total ? Math.max(0, Math.min(100, (Number(m) / total) * 100)) : 0;
+      out.push(el("div", { class: "block" },
+        el("div", { class: "sec-head" }, el("h2", { text: "Time in zones" }), has(zt.total_min) ? el("span", { class: "sub", text: fmtNum(zt.total_min, 0) + " min total" }) : null),
+        el("div", { class: "card", style: "display:grid;gap:12px" },
+          el("div", { class: "zstrip", role: "img", "aria-label": "Time in zones" }, zs.map(z => el("i", { style: `width:${w(zm[z])}%;background:var(--${z})`, title: `${ZL[z]}: ${zm[z]} min` })), has(zt.no_zone_min) ? el("i", { style: `width:${w(zt.no_zone_min)}%;background:var(--muted-bg)` }) : null),
+          (has(th.easy_pct) || has(th.moderate_pct) || has(th.hard_pct)) ? el("div", { class: "three" }, "easy ", el("b", { text: fmtNum(th.easy_pct, 0) + "%" }), " · moderate ", el("b", { text: fmtNum(th.moderate_pct, 0) + "%" }), " · hard ", el("b", { text: fmtNum(th.hard_pct, 0) + "%" })) : null,
+          el("div", { class: "zlist" }, zs.map(z => el("div", null, el("span", { class: "sw", style: `background:var(--${z})` }), el("span", { text: ZL[z] }), el("span", { class: "n", text: fmtNum(zm[z], 0) + " min" }))),
+            has(zt.no_zone_min) ? el("div", null, el("span", { class: "sw", style: "background:var(--muted-bg);border:1px solid var(--line)" }), el("span", { text: "no target (strength, notes)" }), el("span", { class: "n", text: fmtNum(zt.no_zone_min, 0) + " min" })) : null))));
+    }
+    const groups = [["critical", "Critical", "var(--rose)"], ["watch", "Watch", "var(--amber)"], ["positive", "Positive", "var(--green)"]];
+    const rows = groups.flatMap(([k, lab, col]) => (Array.isArray(iv[k]) ? iv[k] : []).map(x => el("div", { class: "ins", style: `--pc:${col}` },
+      el("span", { class: "pill tint", text: lab }),
+      el("div", { class: "nm" }, x.name || "", has(x.interpretation) ? el("small", { text: x.interpretation }) : null),
+      has(x.value) ? el("span", { class: "v", text: fmtNum(x.value, 2) }) : el("span"))));
+    if (rows.length) out.push(el("div", { class: "block" }, el("div", { class: "sec-head" }, el("h2", { text: "Insights" }), el("span", { class: "sub", text: "From Montis's weekly report" })), el("div", { class: "card insights" }, rows)));
+    put($("week-body"), out);
+  }
+  const lp = (tv) => tv.load_pattern || {};
+  async function loadWeekly(gen) {
+    put($("week-body"), loading("Montis is building your weekly report…"));
+    put($("today-guide"), loading("Montis is building your weekly report…"));
+    try {
+      const res = await call("run_weekly", { overview: true });
+      if (gen !== loadGen) return;
+      const p = payloadOf(res);
+      const sg = p && typeof p === "object" ? p.semantic_graph : null;
+      if (!sg) {
+        data.weekly = null;
+        const txt = (p && p.message) || (typeof p === "string" ? p : "Montis returned no weekly report.");
+        put($("week-body"), el("div", { class: "card msg", text: txt })); put($("today-guide"), el("div", { class: "card msg", text: txt }));
+        return;
+      }
+      const iv = sg.insight_view || {};
+      const pick = (arr) => Array.isArray(arr) ? arr.map(x => ({ name: x.name, classification: x.classification, value: x.value })) : [];
+      const acts = Array.isArray(sg.actions) ? sg.actions : [];
+      data.weekly = {
+        period: sg.meta?.period, is_current: sg.meta?.recency?.is_current,
+        training_volume: sg.training_volume ? { hours: sg.training_volume.hours, tss: sg.training_volume.tss, distance_km: sg.training_volume.distance_km, CTL: sg.training_volume.CTL, ATL: sg.training_volume.ATL, TSB: sg.training_volume.TSB, load_pattern: { label: sg.training_volume.load_pattern?.label, meaning: sg.training_volume.load_pattern?.meaning } } : null,
+        current_week: sg.current_ISO_weekly_microcycle ? (({ weekly_target_tss, completed_tss, planned_remaining_tss, projected_total_tss, completed_hours, projected_hours }) => ({ weekly_target_tss, completed_tss, planned_remaining_tss, projected_total_tss, completed_hours, projected_hours }))(sg.current_ISO_weekly_microcycle) : null,
+        zone_time: sg.zone_time ? { zones_min: sg.zone_time.zones_min, no_zone_min: sg.zone_time.no_zone_min, total_min: sg.zone_time.total_min, three_zone: sg.zone_time.three_zone } : null,
+        guidance: {
+          directive: acts.find(a => a.type === "adaptive_summary")?.directive,
+          training_guidance: sg.training_guidance,
+          readiness_signal: acts.find(a => a.type === "state_action")?.readiness_signal,
+          energy_systems: acts.find(a => a.type === "system_guidance")?.message,
+          next_two_weeks: sg.future_actions?.[0] ? { label: sg.future_actions[0].label, reason: sg.future_actions[0].reason } : null,
+          physiology: sg.wellness?.physiology_state ? { label: sg.wellness.physiology_state.label, meaning: sg.wellness.physiology_state.meaning } : null,
+          next_event: sg.event_targets?.next_event ? { name: sg.event_targets.next_event.name, date: sg.event_targets.next_event.date, days_to_event: sg.event_targets.next_event.days_to_event } : null,
+        },
+        insights: { critical: pick(iv.critical), watch: pick(iv.watch), positive: pick(iv.positive) },
+      };
+      renderWeek(sg); renderGuidance(sg);
+    } catch (e) {
+      if (gen !== loadGen) return;
+      const retry = () => loadWeekly(loadGen);
+      put($("week-body"), errBox(e, retry)); put($("today-guide"), errBox(e, retry));
+    }
+  }
+
+  // ---------- activities ----------
+  const DETAIL = [
+    ["moving_time", "Moving time", "", "dur"], ["distance", "Distance", "km", "km"], ["icu_training_load", "Load", ""], ["icu_intensity", "Intensity", "%"],
+    ["icu_weighted_avg_watts", "Weighted power", "W"], ["icu_average_watts", "Avg power", "W"], ["average_heartrate", "Avg HR", "bpm"], ["max_heartrate", "Max HR", "bpm"],
+    ["average_cadence", "Cadence", "rpm"], ["total_elevation_gain", "Climbing", "m"], ["decoupling", "Decoupling", "%"], ["icu_efficiency_factor", "Efficiency factor", ""],
+    ["compliance", "Compliance", "%"], ["icu_rpe", "RPE", "/10"], ["feel", "Feel", "/5"], ["calories", "Calories", "kcal"],
+  ];
+  async function openActivity(id, holder, btn) {
+    const open = btn.getAttribute("aria-expanded") === "true";
+    if (open) { btn.setAttribute("aria-expanded", "false"); holder.hidden = true; return; }
+    btn.setAttribute("aria-expanded", "true"); holder.hidden = false;
+    put(holder, loading("Reading this activity…"));
+    try {
+      const res = await call("get_activity", { activity_id: id });
+      const p = payloadOf(res);
+      const wrap = p?.activities?.[0];
+      const a = wrap?.activity || wrap || {};
+      const held = a.montis_held === true || wrap?.montis_held === true;
+      const kept = {}; DETAIL.forEach(([k]) => { if (has(a[k])) kept[k] = a[k]; });
+      if (Array.isArray(a.interval_summary)) kept.interval_summary = a.interval_summary;
+      data.opened[id] = { id, name: a.name, type: a.type, start_date_local: a.start_date_local, ...kept };
+      const tiles = DETAIL.filter(([k]) => has(a[k])).map(([k, label, unit, f]) => el("div", { class: "stat" }, el("div", { class: "lbl", text: label }),
+        el("div", { class: "val", style: "font-size:1.35rem" }, f === "dur" ? fmtDur(a[k]) : f === "km" ? fmtNum(a[k] / 1000, 1) : fmtNum(a[k]), unit ? el("span", { class: "unit", text: unit }) : null)));
+      const ivs = Array.isArray(a.interval_summary) ? a.interval_summary.filter(has) : [];
+      put(holder, el("div", { class: "card stripe block" },
+        tiles.length ? el("div", { class: "today-box" }, tiles) : el("div", { class: "msg", text: "This activity has no figures to show." }),
+        ivs.length ? el("div", null, el("div", { class: "hero-label", style: "margin-bottom:4px", text: "Intervals" }), el("ul", { class: "ivs" }, ivs.map(s => el("li", { text: s })))) : null,
+        held ? el("div", { class: "held", text: "From Montis's own copy of this activity." }) : null));
+    } catch (e) {
+      put(holder, errBox(e, () => { btn.setAttribute("aria-expanded", "false"); openActivity(id, holder, btn); }));
+    }
+  }
+  async function loadActivities(gen) {
+    put($("acts-body"), loading("Reading your activities…"));
+    const today = isoToday();
+    try {
+      const res = await call("get_activities", { oldest: addDays(today, -13), newest: today, fields: "id,start_date_local,name,type,moving_time,distance,icu_training_load" });
+      if (gen !== loadGen) return;
+      const p = payloadOf(res);
+      const list = Array.isArray(p) ? p : (Array.isArray(p?.activities) ? p.activities : []);
+      const ok = list.filter(a => has(a.name) && has(a.type));
+      const skipped = list.length - ok.length;
+      ok.sort((a, b) => String(b.start_date_local).localeCompare(String(a.start_date_local)));
+      data.activities = ok.map(a => ({ id: a.id, start_date_local: a.start_date_local, name: a.name, type: a.type, moving_time: a.moving_time, distance: a.distance, icu_training_load: a.icu_training_load }));
+      $("st-acts").textContent = stampText(res);
+      const rows = ok.map(a => {
+        const id = String(a.id);
+        const holder = el("div", { hidden: "" });
+        const sub = [fmtDur(a.moving_time), has(a.distance) ? fmtNum(a.distance / 1000, 1) + " km" : null].filter(Boolean).join(" · ");
+        const btn = el("button", { class: "act", type: "button", "aria-expanded": "false" },
+          el("span", { class: "d", text: shortDay(String(a.start_date_local)) }),
+          el("span", { class: "nm" }, el("span", { text: a.name }), el("small", null, el("span", { class: "pill grey", text: a.type }))),
+          el("span", { class: "r" }, has(a.icu_training_load) ? el("b", { text: fmtNum(a.icu_training_load, 0) }) : null, el("span", { text: sub })));
+        btn.addEventListener("click", () => openActivity(id, holder, btn));
+        return [btn, holder];
+      });
+      put($("acts-body"),
+        ok.length ? el("div", { class: "acts" }, rows.flat()) : el("div", { class: "card msg", text: "No activities in the last 14 days." }),
+        skipped ? el("p", { class: "small", text: `${skipped} ${skipped === 1 ? "activity was" : "activities were"} left out because Montis cannot read ${skipped === 1 ? "it" : "them"} (for example ones imported from Strava).` }) : null);
+    } catch (e) {
+      if (gen !== loadGen) return;
+      put($("acts-body"), errBox(e, () => loadActivities(loadGen)));
+    }
+  }
+
+  // ---------- coach ----------
+  async function loadCoach(gen) {
+    try {
+      const res = await call("get_coached_athletes", {});
+      if (gen !== loadGen) return;
+      const p = payloadOf(res);
+      const list = Array.isArray(p?.athletes) ? p.athletes : [];
+      if (!list.length) { $("tab-coach").hidden = true; return; }
+      $("tab-coach").hidden = false;
+      put($("coach-list"), el("div", { class: "card tbl-wrap", style: "padding:6px 10px" }, el("table", null, el("tbody", null,
+        list.map(a => el("tr", null, el("td", { style: "font-weight:600", text: a.name || "Unnamed athlete" }), el("td", { class: "num" }, el("span", { class: a.connected ? "pill" : "pill grey", text: a.connected ? "Connected" : "Not connected" }))))))));
+    } catch { $("tab-coach").hidden = true; }
+  }
+  $("cockpit").addEventListener("click", async () => {
+    const btn = $("cockpit"); btn.disabled = true;
+    put($("cockpit-body"), loading("Montis is building a report for each athlete…"));
+    try {
+      const res = await call("coach_cockpit", {});
+      const p = payloadOf(res) || {};
+      const items = Array.isArray(p.athletes) ? p.athletes : [];
+      const cards = items.map(it => {
+        const cs = it.cockpit_state || {};
+        if (cs.data_available === false) return el("div", { class: "card coach-card" }, el("div", { class: "ev-name", text: it.name || "Athlete" }), el("div", { class: "msg", text: cs.message || "No data for this athlete yet." }));
+        const wl = it.weekly_load || {}, ph = it.physiology || {}, ic = it.insight_counts || {}, ad = it.adaptive_decision || {};
+        return el("div", { class: "card coach-card block" },
+          el("div", { class: "ev-top" }, el("span", { class: "ev-name", text: it.name || "Athlete" }),
+            el("div", { class: "chips" },
+              has(ic.critical) ? el("span", { class: "pill tint", style: "--pc:var(--rose)", text: `${ic.critical} critical` }) : null,
+              has(ic.watch) ? el("span", { class: "pill tint", style: "--pc:var(--amber)", text: `${ic.watch} watch` }) : null)),
+          el("div", { class: "chips" },
+            has(wl.load_pattern_label) ? el("span", { class: "pill grey", text: wl.load_pattern_label }) : null,
+            has(ph.state_label) ? el("span", { class: "pill grey", text: ph.state_label }) : null),
+          el("div", { class: "figs", text: [has(wl.hours) ? fmtNum(wl.hours) + " h" : null, has(wl.tss) ? fmtNum(wl.tss, 0) + " TSS" : null].filter(has).join(" · ") }),
+          directiveNode(ad.directive), has(ad.final_guidance) ? el("div", { class: "msg", text: ad.final_guidance }) : null);
+      });
+      const nc = Array.isArray(p.not_connected) ? p.not_connected.length : 0;
+      const er = Array.isArray(p.errors) ? p.errors.length : 0;
+      put($("cockpit-body"), cards.length ? cards : el("div", { class: "card msg", text: "No athlete reports came back." }),
+        (nc || er) ? el("p", { class: "small", text: `${nc} not connected · ${er} could not be read` }) : null);
+    } catch (e) {
+      put($("cockpit-body"), errBox(e, () => $("cockpit").click()));
+    } finally { btn.disabled = false; }
+  });
+
+  // ---------- ask ----------
+  let askCtl = null;
+  $("qchips").addEventListener("click", (ev) => { const b = ev.target.closest("button"); if (b) { $("q").value = b.textContent; $("q").focus(); } });
+  $("ask").addEventListener("click", async () => {
+    const q = $("q").value.trim();
+    if (!q || !sample) { if (!q) $("ask-note").textContent = "Type a question first."; return; }
+    $("ask-note").textContent = "";
+    askCtl = new AbortController();
+    $("ask").disabled = true; $("stop").hidden = false;
+    $("answer-wrap").hidden = false; $("answer").textContent = "Thinking…";
+    const ctx = { today: isoToday(), wellness_today: data.wellness, calendar_events: data.calendar, weekly_report: data.weekly, activities_last_14_days: data.activities, opened_activities: Object.values(data.opened) };
+    const prompt = [
+      "You are helping an endurance athlete read their own training data from Montis.",
+      "Use ONLY the JSON data below. If something needed to answer is missing, say what is missing rather than guessing.",
+      "Explain Montis's guidance; do not overrule it. Give no medical advice.",
+      "Answer short and plain, in the language of the question. Plain text, no markdown headings.",
+      "", "DATA:", JSON.stringify(ctx), "", "QUESTION:", q,
+    ].join("\n");
+    try {
+      const { text } = await sample(prompt, { signal: askCtl.signal, cache: false, onText: ({ text }) => { $("answer").textContent = text; } });
+      $("answer").textContent = text;
+    } catch (e) {
+      if (e?.code === "cancelled") { if (!e.text) $("answer").textContent = "Stopped."; }
+      else if (e?.code === "not_granted") { $("answer").textContent = "Claude was not allowed for this page. Choose Allow when Claude asks."; }
+      else if (e?.code === "rate_limited") { $("answer").textContent = "You have reached your Claude usage limit for now. Try again later."; }
+      else { $("answer").textContent = "Claude could not answer just now. Try again in a moment."; }
+    } finally { $("ask").disabled = false; $("stop").hidden = true; askCtl = null; }
+  });
+  $("stop").addEventListener("click", () => askCtl?.abort());
+
+  // ---------- boot ----------
+  function pageMsg(text, retry) {
+    const m = $("page-msg"); m.hidden = false;
+    put(m, el("img", { src: "logo.png", alt: "", width: "64", height: "64", style: "border-radius:16px" }), el("div", { text }), retry ? el("button", { type: "button", class: "primary", onclick: retry, text: "Try again" }) : null);
+    document.querySelectorAll("section.panel[data-panel]").forEach(p => p.hidden = true);
+  }
+  async function loadAll() {
+    const gen = ++loadGen;
+    $("page-msg").hidden = true;
+    let saved = "today"; try { saved = localStorage.getItem("montis-tab") || "today"; } catch {}
+    const tabBtn = document.querySelector(`.tab[data-tab="${saved}"]`);
+    showTab(tabBtn && !tabBtn.hidden ? saved : "today");
+    if (!mcp) { pageMsg(ERR.add); return; }
+    $("who").textContent = "Connecting to Montis…";
+    try {
+      const res = await call("connection_status", {});
+      if (gen !== loadGen) return;
+      const s = payloadOf(res) || {};
+      if (s.timezone) tz = s.timezone;
+      if (s.connected === false) { pageMsg(s.message || "Connect Intervals.icu to Montis, then try again.", loadAll); $("who").textContent = ""; return; }
+      $("who").textContent = (s.athlete_name ? s.athlete_name + " · " : "") + "Coach intelligence";
+    } catch (e) {
+      if (gen !== loadGen) return;
+      $("who").textContent = ""; pageMsg(errText(e), loadAll); return;
+    }
+    loadCalendar(gen); loadWellness(gen); loadWeekly(gen); loadActivities(gen); loadCoach(gen);
+  }
+  $("refresh").addEventListener("click", loadAll);
+  $("install").addEventListener("click", async () => {
+    try { const r = await desktop.install.request(); if (r === "installed") $("install").hidden = true; } catch {}
+  });
+
+  (async () => {
+    const use = (n) => { try { return window.claude ? window.claude.use(n).catch(() => null) : Promise.resolve(null); } catch { return Promise.resolve(null); } };
+    const [m, s, d] = await Promise.all([use("mcp"), use("sample"), use("desktop")]);
+    mcp = m; sample = s; desktop = d;
+    if (sample) $("tab-ask").hidden = false;
+    try { if ((await desktop?.install?.state()) === "available") $("install").hidden = false; } catch {}
+    if (desktop?.app?.dock?.setIcon) {
+      fetch("logo.png").then(r => r.blob()).then(b => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = no; fr.readAsDataURL(b); }))
+        .then(url => desktop.app.dock.setIcon(url)).catch(() => {});
+    }
+    loadAll();
+  })();
+})();
+</script>
